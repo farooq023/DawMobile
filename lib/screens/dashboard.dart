@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import '../providers/dashboardPro.dart';
 import '../widgets/main_drawer.dart';
@@ -19,7 +21,7 @@ class _DashboardState extends State<Dashboard> {
   // final String authToken;
   // String uName = '';
 
-  int newM = 0, recM = 0, retM = 0, reC = 0;
+  String newM = '0', recM = '0', retM = '0', reC = '0';
   bool _received = false;
 
   // Dashboard(this.authToken, this.uName);
@@ -34,7 +36,7 @@ class _DashboardState extends State<Dashboard> {
     // await Provider.of<DashboardPro>(context, listen: false)
     //     .getUsername(context);
 
-    List<int> _totalMails =
+    List<String> _totalMails =
         await Provider.of<DashboardPro>(context, listen: false)
             .getUserStats(context);
 
@@ -91,20 +93,24 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     var mSize = MediaQuery.of(context).size;
-    var mHeight = mSize.height;
+    // var mHeight = mSize.height;
+    var mHeight = MediaQuery.of(context).size.height -
+        AppBar().preferredSize.height -
+        MediaQuery.of(context).padding.top -
+        MediaQuery.of(context).padding.bottom;
     var mWidth = mSize.width;
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title: const Text('Dashboard'),
+        title: Text(AppLocalizations.of(context)!.dashboard),
       ),
       drawer: const MainDrawer(),
       body: _received
           ? Container(
-              // height: mHeight,
-              // width: mWidth,
+              height: mHeight,
+              width: mWidth,
               padding: const EdgeInsets.all(8),
               // decoration: BoxDecoration(
               //   // color: Theme.of(context).backgroundColor,
@@ -115,17 +121,18 @@ class _DashboardState extends State<Dashboard> {
               // ),
               child: Container(
                 child: GridView(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     mainAxisSpacing: 11,
                     crossAxisCount: 2,
                     crossAxisSpacing: 11,
-                    childAspectRatio: 4 / 2,
+                    childAspectRatio: 4/2.55,
+                    // childAspectRatio: mWidth * 0.4 / mHeight * 0.05,
                   ),
                   children: [
-                    buildGridTile('$newM', 'New', Colors.green),
-                    buildGridTile('$recM', 'Received', Colors.pink),
-                    buildGridTile('$retM', 'Returned', Colors.blue),
-                    buildGridTile('$reC', 'Returned to Creator', Colors.purple),
+                    buildGridTile('$newM', AppLocalizations.of(context)!.neww, Colors.green),
+                    buildGridTile('$recM', AppLocalizations.of(context)!.rcvd, Colors.pink),
+                    buildGridTile('$retM', AppLocalizations.of(context)!.rtrnd, Colors.blue),
+                    buildGridTile('$reC', AppLocalizations.of(context)!.rtc, Colors.purple),
                   ],
                 ),
               ),

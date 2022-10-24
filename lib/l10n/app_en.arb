@@ -7,8 +7,14 @@
     "enter":"Enter",
     "fill":"Fill all fields!",
     "inv":"Invalid Credentials!",
+    "neww":"New",
+    "rcvd":"Received",
+    "rtrnd":"Returned",
+    "rtc":"Returned to Creator",
+    "err":"Server Error",
     
     "inbox":"Inbox",
     "dashboard":"Dashboard",
+    "changeLang":"Change Language",
     "logOut":"Log Out"
 }

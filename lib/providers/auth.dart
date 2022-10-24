@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import './languageProvider.dart';
 
 class Auth with ChangeNotifier {
   String accessToken = '';
@@ -11,7 +12,7 @@ class Auth with ChangeNotifier {
   String jobTitle = '';
 
   ///********* */
-  
+
   // String accessToken = 'jVhzB7lOtMYSC74yLSBUmWP9cino1yiq_JFHjRUh6U50KcwqAhlN75q3qg7EI5e0eQL-P54Xgp9eJzrcYUds5hlSgV6rx7w_lLDtOcCuN1xIbQGU91yg0qAYFUrF8xAxRTOTLfl0BxblLS5YvhrndZlXVVerr4O-8YZh_JIHir5IJDrk-pcgLcU0_r_uEnSFsNZt9aNvt4k138Z9yVyBhECPkG66u9pvIFq7snLtDTusMrHYiG_zGhGSmGgtzyCuGmTFVajPggWN88O2UMAHdw';
   // String userName = 'dawqa_3';
   // int userID = 4;
@@ -23,7 +24,8 @@ class Auth with ChangeNotifier {
   }
 
   Future<String> login(String un, String pass) async {
-    const url = 'http://10.0.190.191:51/token';
+    try{
+      const url = 'http://10.0.190.191:51/token';
     var response = await http.post(
       Uri.parse(url),
       headers: {
@@ -62,19 +64,31 @@ class Auth with ChangeNotifier {
 
       userID = res['Result']['UserId'];
 
-      name = res['Result']['UserFullNameEn'];
-      jobTitle = res['Result']['JobTitle'];
-
+      if (LanguageProvider.appLocale == Locale('ar')) {
+        name = res['Result']['UserFullName'];
+        jobTitle = res['Result']['JobTitle'];
+      } else {
+        name = res['Result']['UserFullNameEn'];
+        jobTitle = res['Result']['JobTitleEn'];
+      }
       notifyListeners();
       return 'success';
-    } 
-    else {
+    } else {
       return 'failure';
+    }
+    }
+    catch(e) {
+      print('errr caught');
+      return 'error';
     }
   }
 
   Future<void> logout() async {
+    
     accessToken = '';
+    userName = '';
+    userID = 0;
+
     notifyListeners();
     const url = 'http://10.0.190.191:51/api/Common/Logout';
     // var response = await http.get(

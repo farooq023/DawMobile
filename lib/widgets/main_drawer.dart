@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../providers/auth.dart';
+import '../providers/languageProvider.dart';
 
 class MainDrawer extends StatefulWidget {
   const MainDrawer({super.key});
@@ -40,13 +41,24 @@ class _MainDrawerState extends State<MainDrawer> {
           // fontWeight: FontWeight.bold,
         ),
       ),
-      onTap: route != 'logout'
+      onTap: route.startsWith('/')
           ? () {
               Navigator.pushReplacementNamed(context, route);
             }
-          : () {
-              Provider.of<Auth>(context, listen: false).logout();
-            },
+          : route == 'logout'
+              ? () {
+                  Provider.of<Auth>(context, listen: false).logout();
+                  // Navigator.pushReplacementNamed(context, '/login');
+                }
+              : () {
+                  Provider.of<LanguageProvider>(context, listen: false)
+                      .changeLanguage();
+
+                  // print(ModalRoute.of(context)!.settings.name);
+
+                  Navigator.pushReplacementNamed(
+                      context, ModalRoute.of(context)!.settings.name!);
+                },
     );
   }
 
@@ -133,11 +145,16 @@ class _MainDrawerState extends State<MainDrawer> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Text('d'),
-                    buildListTile(Icons.dashboard, AppLocalizations.of(context)!.dashboard, '/dashboard'),
-                    buildListTile(Icons.inbox, AppLocalizations.of(context)!.inbox, '/inbox'),
+                    buildListTile(Icons.dashboard,
+                        AppLocalizations.of(context)!.dashboard, '/dashboard'),
+                    buildListTile(Icons.inbox,
+                        AppLocalizations.of(context)!.inbox, '/inbox'),
                     // buildListTile(Icons.inbox,'Incoming Workflows', '/inbox'), fileviewer
 
-                    buildListTile(Icons.logout, AppLocalizations.of(context)!.logOut, 'logout'),
+                    buildListTile(Icons.language,
+                        AppLocalizations.of(context)!.changeLang, 'changeLang'),
+                    buildListTile(Icons.logout,
+                        AppLocalizations.of(context)!.logOut, 'logout'),
                     // buildListTile(Icons.outbox,'Outgoing Workflows',),
                   ],
                 ),

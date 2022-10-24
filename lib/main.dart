@@ -91,7 +91,7 @@ class _MyAppState extends State<MyApp> {
           routes: {
             Dashboard.routeName: (ctx) => Dashboard(),
             Inbox.routeName: (ctx) => Inbox(),
-            // FileViewer.routeName: (ctx) => FileViewer(''), //'/fileviewer'
+            // Login.routeName: (ctx) => Login(),
           },
         ),
       ),

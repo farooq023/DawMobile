@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import './languageProvider.dart';
 
 class InboxPro with ChangeNotifier {
   String accessToken;
@@ -84,24 +85,45 @@ class InboxPro with ChangeNotifier {
       } else {
         beginDate = comparer[0];
       }
-      setInbox.add(
-        {
-          "Sender": receivedInbox[i]['Sender'],
-          "WFBeginDate": beginDate,
-          "SUBJECT": receivedInbox[i]['SUBJECT'],
-          "StatusID": receivedInbox[i]['StatusID'],
-          "RequisitionNo": receivedInbox[i]['RequisitionNo'],
-          //
-          "isChecked": false, //declaring by self to enable checkBoxes
-          //
-          "DETID": receivedInbox[i]['DETID'], //primary key
-          //
-          "EnableTransfer": receivedInbox[i]['EnableTransfer'],
-          "EnableStartNewWF": receivedInbox[i]['EnableStartNewWF'],
-          "EnableCompleteTask": receivedInbox[i]['EnableCompleteTask'],
-          "EnableAddNotes": receivedInbox[i]['EnableAddNotes'],
-        },
-      );
+      if (LanguageProvider.appLocale == Locale('ar')) {
+        setInbox.add(
+          {
+            "Sender": receivedInbox[i]['Sender'],
+            "WFBeginDate": beginDate,
+            "SUBJECT": receivedInbox[i]['SUBJECT'],
+            "StatusID": receivedInbox[i]['StatusID'],
+            "RequisitionNo": receivedInbox[i]['RequisitionNo'],
+            //
+            "isChecked": false, //declaring by self to enable checkBoxes
+            //
+            "DETID": receivedInbox[i]['DETID'], //primary key
+            //
+            "EnableTransfer": receivedInbox[i]['EnableTransfer'],
+            "EnableStartNewWF": receivedInbox[i]['EnableStartNewWF'],
+            "EnableCompleteTask": receivedInbox[i]['EnableCompleteTask'],
+            "EnableAddNotes": receivedInbox[i]['EnableAddNotes'],
+          },
+        );
+      } else {
+        setInbox.add(
+          {
+            "Sender": receivedInbox[i]['SenderEn'],
+            "WFBeginDate": beginDate,
+            "SUBJECT": receivedInbox[i]['SUBJECT'],
+            "StatusID": receivedInbox[i]['StatusID'],
+            "RequisitionNo": receivedInbox[i]['RequisitionNo'],
+            //
+            "isChecked": false, //declaring by self to enable checkBoxes
+            //
+            "DETID": receivedInbox[i]['DETID'], //primary key
+            //
+            "EnableTransfer": receivedInbox[i]['EnableTransfer'],
+            "EnableStartNewWF": receivedInbox[i]['EnableStartNewWF'],
+            "EnableCompleteTask": receivedInbox[i]['EnableCompleteTask'],
+            "EnableAddNotes": receivedInbox[i]['EnableAddNotes'],
+          },
+        );
+      }
     }
 
     // savedInbox = setInbox;

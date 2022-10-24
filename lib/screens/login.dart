@@ -7,6 +7,7 @@ import '../providers/auth.dart';
 import '../providers/languageProvider.dart';
 
 class Login extends StatefulWidget {
+  static const routeName = '/login';
   @override
   State<Login> createState() => _LoginState();
 }
@@ -16,7 +17,7 @@ class _LoginState extends State<Login> {
 
   String name = '', pass = '';
   final _focusU = FocusNode(), _focusP = FocusNode();
-  int _ersI = -1, spin = 0, fill = 0, inv = 0;
+  int _ersI = -1, spin = 0, fill = 0, inv = 0 , err = 0;
 
   // final List<String> _ers = [
   //   'Fill all fields!',
@@ -38,9 +39,12 @@ class _LoginState extends State<Login> {
     _clear;
     // await 5000;
 
+    
+
     if (name == '' || pass == '') {
       setState(() {
         inv = 0;
+        err = 0;
         fill = 1;
       });
     } else {
@@ -58,7 +62,15 @@ class _LoginState extends State<Login> {
       if (res == 'failure') {
         setState(() {
           fill = 0;
+          err = 0;
           inv = 1;
+        });
+      }
+      else {
+        setState(() {
+          fill = 0;
+          inv = 0;
+          err = 1;
         });
       }
     }
@@ -72,6 +84,7 @@ class _LoginState extends State<Login> {
     setState(() {
       inv = 0;
       fill = 0;
+      err = 0;
     });
   }
 
@@ -289,6 +302,17 @@ class _LoginState extends State<Login> {
                                     Container(
                                       child: Text(
                                         AppLocalizations.of(context)!.inv,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ),
+
+                                  if (err == 1)
+                                    Container(
+                                      child: Text(
+                                        AppLocalizations.of(context)!.err,
                                         style: const TextStyle(
                                           fontSize: 18,
                                           color: Colors.red,
