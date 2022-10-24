@@ -1,0 +1,14 @@
+{
+    "documentAutomated":"Document Automated",
+    "workflow":"Workflow",
+    "userLogin":"User Login",
+    "username":"Username",
+    "password":"Password",
+    "enter":"Enter",
+    "fill":"Fill all fields!",
+    "inv":"Invalid Credentials!",
+    
+    "inbox":"Inbox",
+    "dashboard":"Dashboard",
+    "logOut":"Log Out"
+}
