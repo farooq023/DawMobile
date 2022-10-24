@@ -12,20 +12,29 @@ import './providers/auth.dart';
 import './providers/dashboardPro.dart';
 import './providers/inboxPro.dart';
 import './providers/fileProvider.dart';
+import './providers/languageProvider.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
           value: Auth(),
+        ),
+        ChangeNotifierProvider.value(
+          value: LanguageProvider(),
         ),
         ChangeNotifierProxyProvider<Auth, DashboardPro>(
           create: (ctx) => DashboardPro('', 0),
@@ -41,9 +50,19 @@ class MyApp extends StatelessWidget {
           update: (_, auth, data) =>
               FileProvider(auth.accessToken, auth.userID),
         ),
+        // ChangeNotifierProvider.value(
+        //   value: LanguageProvider(),
+        // ),
       ],
-      child: Consumer<Auth>(
-        builder: (ctx, auth, _) => MaterialApp(
+      // child: MultiProvider(
+      //   providers: [
+      //     ChangeNotifierProvider.value(
+      //       value: Auth(),
+      //     ),
+      //   ],
+      // ),
+      child: Consumer2<Auth, LanguageProvider>(
+        builder: (ctx, auth, lang, _) => MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'DAW',
           localizationsDelegates: const [
@@ -56,6 +75,7 @@ class MyApp extends StatelessWidget {
             Locale('en', ''),
             Locale('ar', ''),
           ],
+          locale: LanguageProvider.appLocale,
           theme: ThemeData(
             primaryColor: const Color(0xFF1976D2),
             backgroundColor: const Color.fromARGB(255, 237, 244, 250),
@@ -67,6 +87,7 @@ class MyApp extends StatelessWidget {
 
           // home: auth.isAuth ? Login() : Dashboard(),
           home: auth.isAuth ? Login() : Inbox(),
+          // home: Login(),
           routes: {
             Dashboard.routeName: (ctx) => Dashboard(),
             Inbox.routeName: (ctx) => Inbox(),

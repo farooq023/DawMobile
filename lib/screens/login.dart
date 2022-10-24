@@ -4,6 +4,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../providers/auth.dart';
 
+import '../providers/languageProvider.dart';
+
+
 class Login extends StatefulWidget {
   @override
   State<Login> createState() => _LoginState();
@@ -60,6 +63,12 @@ class _LoginState extends State<Login> {
         });
       }
     }
+  }
+
+  void _changeLang(){
+    print('now chnggng');
+    Provider.of<LanguageProvider>(context, listen: false).changeLanguageTest();
+    // LanguageProvider.changeLanguageTest();
   }
 
   void _clear() {
@@ -292,6 +301,22 @@ class _LoginState extends State<Login> {
                                 ),
                               ),
                             ),
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
+                                // onPressed: _submit,
+                                onPressed: _changeLang,
+                                child: Text(
+                                  'Change Lang',
+                                  // AppLocalizations.of(context)!.enter,
+                                  style: const TextStyle(fontSize: 21),
+                                ),
+                              ),
                             Center(
                               child: spin != 0
                                   ? CircularProgressIndicator(
