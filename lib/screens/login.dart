@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'dart:io';
 
 import '../providers/auth.dart';
 
@@ -17,7 +18,7 @@ class _LoginState extends State<Login> {
 
   String name = '', pass = '';
   final _focusU = FocusNode(), _focusP = FocusNode();
-  int _ersI = -1, spin = 0, fill = 0, inv = 0 , err = 0;
+  int _ersI = -1, spin = 0, fill = 0, inv = 0, err = 0, net = 0;
 
   // final List<String> _ers = [
   //   'Fill all fields!',
@@ -39,7 +40,25 @@ class _LoginState extends State<Login> {
     _clear;
     // await 5000;
 
-    
+    // try {
+    //   final result = await InternetAddress.lookup('10.0.190.191');
+    //   if (result.isNotEmpty || result[0].rawAddress.isNotEmpty) {
+    //     print('no net');
+    //     setState(() {
+    //       net = 1;
+    //     });
+    //     return;
+    //   }
+    // } on SocketException catch (_) {
+    //     print('no net');
+    //   setState(() {
+    //     net = 1;
+    //   });
+    //   return;
+    // }
+
+    // print('connection succeeded');
+    // return;
 
     if (name == '' || pass == '') {
       setState(() {
@@ -47,6 +66,7 @@ class _LoginState extends State<Login> {
         err = 0;
         fill = 1;
       });
+      return;
     } else {
       setState(() {
         spin = 1;
@@ -65,8 +85,7 @@ class _LoginState extends State<Login> {
           err = 0;
           inv = 1;
         });
-      }
-      else {
+      } else {
         setState(() {
           fill = 0;
           inv = 0;
@@ -85,6 +104,7 @@ class _LoginState extends State<Login> {
       inv = 0;
       fill = 0;
       err = 0;
+      net = 0;
     });
   }
 
@@ -218,7 +238,8 @@ class _LoginState extends State<Login> {
                                       border: UnderlineInputBorder(),
                                       focusedBorder: UnderlineInputBorder(
                                         borderSide: BorderSide(
-                                            color: Theme.of(context).primaryColor),
+                                            color:
+                                                Theme.of(context).primaryColor),
                                       ),
                                       // labelText: 'Enter Name',
                                       // hintText: 'Enter Your Name',
@@ -243,7 +264,8 @@ class _LoginState extends State<Login> {
                                         // print('onSubmitted2 executed');
                                         _submit();
                                       },
-                                      cursorColor: Theme.of(context).primaryColor,
+                                      cursorColor:
+                                          Theme.of(context).primaryColor,
                                       onTap: _clear,
                                       focusNode: _focusP,
                                       textInputAction: TextInputAction.send,
@@ -254,7 +276,8 @@ class _LoginState extends State<Login> {
                                         border: const UnderlineInputBorder(),
                                         focusedBorder: UnderlineInputBorder(
                                           borderSide: BorderSide(
-                                              color: Theme.of(context).primaryColor),
+                                              color: Theme.of(context)
+                                                  .primaryColor),
                                         ),
                                         // iconColor: Theme.of(context).primaryColor,
                                       ),
@@ -276,7 +299,7 @@ class _LoginState extends State<Login> {
                                   //         ),
                                   // ),
 
-                                  if (fill == 0 && inv == 0)
+                                  if (fill == 0 && inv == 0 && err == 0 && net == 0)
                                     Container(
                                       child: const Text(
                                         "",
@@ -320,17 +343,29 @@ class _LoginState extends State<Login> {
                                       ),
                                     ),
 
+                                  if (net == 1)
+                                    Container(
+                                      child: Text(
+                                        'not connected',
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ),
+
                                   Container(
                                     height: mHeight * 0.08,
                                     width: double.infinity,
-                                    margin:
-                                        const EdgeInsets.only(top: 10, bottom: 20),
+                                    margin: const EdgeInsets.only(
+                                        top: 10, bottom: 20),
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor:
                                             Theme.of(context).primaryColor,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(30),
+                                          borderRadius:
+                                              BorderRadius.circular(30),
                                         ),
                                       ),
                                       // onPressed: _submit,
@@ -360,7 +395,8 @@ class _LoginState extends State<Login> {
                                   Center(
                                     child: spin != 0
                                         ? CircularProgressIndicator(
-                                            color: Theme.of(context).primaryColor,
+                                            color:
+                                                Theme.of(context).primaryColor,
                                           )
                                         : null,
                                   ),

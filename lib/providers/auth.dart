@@ -24,67 +24,65 @@ class Auth with ChangeNotifier {
   }
 
   Future<String> login(String un, String pass) async {
-    try{
+    try {
       const url = 'http://10.0.190.191:51/token';
-    var response = await http.post(
-      Uri.parse(url),
-      headers: {
-        "user-language": "ar",
-        // "Content-Type": "application/json; charset=UTF-8",
-      },
-      // encoding: Encoding.getByName('utf-8'),
-      body: {
-        'grant_type': 'password',
-        'username': un,
-        'password': pass,
-      },
-    );
-
-    var res = json.decode(response.body);
-
-    if (res.containsKey('access_token')) {
-      // print(res['access_token']);
-      accessToken = res['access_token'];
-      userName = un;
-
-      //Now Fetching UserInfo i.e. (UserID, Employee Name & Job Title)
-
-      String url =
-          'http://10.0.190.191:51/api/Common/GetUserInfo?userName=$userName&LogLogin=true&ActionUserID=';
-      response = await http.get(
+      var response = await http.post(
         Uri.parse(url),
         headers: {
-          'Authorization': 'Bearer $accessToken',
+          "user-language": "ar",
+          // "Content-Type": "application/json; charset=UTF-8",
+        },
+        // encoding: Encoding.getByName('utf-8'),
+        body: {
+          'grant_type': 'password',
+          'username': un,
+          'password': pass,
         },
       );
 
-      // print('request sent');
+      var res = json.decode(response.body);
 
-      res = await json.decode(response.body);
+      if (res.containsKey('access_token')) {
+        // print(res['access_token']);
+        accessToken = res['access_token'];
+        userName = un;
 
-      userID = res['Result']['UserId'];
+        //Now Fetching UserInfo i.e. (UserID, Employee Name & Job Title)
 
-      if (LanguageProvider.appLocale == Locale('ar')) {
-        name = res['Result']['UserFullName'];
-        jobTitle = res['Result']['JobTitle'];
+        String url =
+            'http://10.0.190.191:51/api/Common/GetUserInfo?userName=$userName&LogLogin=true&ActionUserID=';
+        response = await http.get(
+          Uri.parse(url),
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        );
+
+        // print('request sent');
+
+        res = await json.decode(response.body);
+
+        userID = res['Result']['UserId'];
+
+        if (LanguageProvider.appLocale == Locale('ar')) {
+          name = res['Result']['UserFullName'];
+          jobTitle = res['Result']['JobTitle'];
+        } else {
+          name = res['Result']['UserFullNameEn'];
+          jobTitle = res['Result']['JobTitleEn'];
+        }
+        notifyListeners();
+        return 'success';
       } else {
-        name = res['Result']['UserFullNameEn'];
-        jobTitle = res['Result']['JobTitleEn'];
+        return 'failure';
       }
-      notifyListeners();
-      return 'success';
-    } else {
-      return 'failure';
-    }
-    }
-    catch(e) {
+    } catch (e) {
       print('errr caught');
       return 'error';
     }
   }
 
   Future<void> logout() async {
-    
     accessToken = '';
     userName = '';
     userID = 0;
