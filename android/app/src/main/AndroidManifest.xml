@@ -2,7 +2,7 @@
     package="com.example.daw">
    <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="daw"
+        android:label="DAW"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -48,7 +48,7 @@ class _MainDrawerState extends State<MainDrawer> {
           : route == 'logout'
               ? () {
                   Provider.of<Auth>(context, listen: false).logout();
-                  // Navigator.pushReplacementNamed(context, '/login');
+                  Navigator.pushReplacementNamed(context, '/login');
                 }
               : () {
                   Provider.of<LanguageProvider>(context, listen: false)

@@ -50,9 +50,8 @@ class _LoginState extends State<Login> {
       spin = 1;
     });
 
-    // await 5000;
 
-    Socket.connect('10.0.190.191', 50, timeout: Duration(seconds: 2))
+    Socket.connect('10.0.190.191', 50, timeout: const Duration(seconds: 3))
         .then((socket) async {
 
       String res =

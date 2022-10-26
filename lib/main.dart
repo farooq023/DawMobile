@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter/services.dart';
 
 import './screens/login.dart';
 import './screens/dashboard.dart';
@@ -28,6 +29,10 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
@@ -89,9 +94,9 @@ class _MyAppState extends State<MyApp> {
           home: auth.isAuth ? Login() : Inbox(),
           // home: Login(),
           routes: {
+            Login.routeName: (ctx) => Login(),
             Dashboard.routeName: (ctx) => Dashboard(),
             Inbox.routeName: (ctx) => Inbox(),
-            // Login.routeName: (ctx) => Login(),
           },
         ),
       ),
