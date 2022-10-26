@@ -11,7 +11,7 @@
     "rcvd":"Received",
     "rtrnd":"Returned",
     "rtc":"Returned to Creator",
-    "err":"Server Error",
+    "err":"Host Unreachable",
     
     "inbox":"Inbox",
     "dashboard":"Dashboard",

@@ -110,13 +110,13 @@ class FileProvider with ChangeNotifier {
     // print(url);
 
     if (url.startsWith('http://ser-dew-001.scpd.com')) {
-      print('1');
+      // print('1');
       return url.replaceFirst('ser-dew-001.scpd.com', '10.0.190.191');
     } else if (url.startsWith('http://ser-ool-001.scpd.com')) {
-      print('2');
+      // print('2');
       return url.replaceFirst('http://ser-ool-001.scpd.com', '10.0.190.193');
     } else if (url.startsWith('http://SER-OOL-001.scpd.com')) {
-      print('3');
+      // print('3');
       return url.replaceFirst('SER-OOL-001.scpd.com', '10.0.190.193');
     }
     return url;

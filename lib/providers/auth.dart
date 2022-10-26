@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import './languageProvider.dart';
+import 'dart:io';
 
 class Auth with ChangeNotifier {
   String accessToken = '';
@@ -25,6 +26,23 @@ class Auth with ChangeNotifier {
 
   Future<String> login(String un, String pass) async {
     try {
+      // var result = await InternetAddress.lookup('10.0.190.191');
+      // // if (!result.isNotEmpty && !result[0].rawAddress.isNotEmpty) {
+      // //   throw Error;
+      // // }
+      // if (result.isNotEmpty) {
+      //   throw Error;
+      // }
+
+    //   Socket.connect('10.0.190.191', 50, timeout: Duration(seconds: 3)).then((socket){
+    //    print("Success");
+    //    socket.destroy();
+    //  }).catchError((error){
+    //    print("Exception on Socket "+error.toString());
+    //  });
+
+      print('i am being executed');
+
       const url = 'http://10.0.190.191:51/token';
       var response = await http.post(
         Uri.parse(url),
@@ -80,6 +98,18 @@ class Auth with ChangeNotifier {
       print('errr caught');
       return 'error';
     }
+  }
+
+  String checker() {
+    Future.delayed(Duration(seconds: 3), () {
+      if (!isAuth) {
+        print('i am returning error');
+        return 'e';
+      } else {
+        return '';
+      }
+    });
+    return '';
   }
 
   Future<void> logout() async {

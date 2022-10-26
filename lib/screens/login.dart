@@ -18,7 +18,7 @@ class _LoginState extends State<Login> {
 
   String name = '', pass = '';
   final _focusU = FocusNode(), _focusP = FocusNode();
-  int _ersI = -1, spin = 0, fill = 0, inv = 0, err = 0, net = 0;
+  int spin = 0, fill = 0, inv = 0, err = 0, net = 0;
 
   // final List<String> _ers = [
   //   'Fill all fields!',
@@ -37,40 +37,23 @@ class _LoginState extends State<Login> {
     _focusP.unfocus();
 
     // _focusP.unfocus;
-    _clear;
-    // await 5000;
-
-    // try {
-    //   final result = await InternetAddress.lookup('10.0.190.191');
-    //   if (result.isNotEmpty || result[0].rawAddress.isNotEmpty) {
-    //     print('no net');
-    //     setState(() {
-    //       net = 1;
-    //     });
-    //     return;
-    //   }
-    // } on SocketException catch (_) {
-    //     print('no net');
-    //   setState(() {
-    //     net = 1;
-    //   });
-    //   return;
-    // }
-
-    // print('connection succeeded');
-    // return;
+    _clear();
 
     if (name == '' || pass == '') {
       setState(() {
-        inv = 0;
-        err = 0;
         fill = 1;
       });
       return;
-    } else {
-      setState(() {
-        spin = 1;
-      });
+    }
+
+    setState(() {
+      spin = 1;
+    });
+
+    // await 5000;
+
+    Socket.connect('10.0.190.191', 50, timeout: Duration(seconds: 2))
+        .then((socket) async {
 
       String res =
           await Provider.of<Auth>(context, listen: false).login(name, pass);
@@ -81,18 +64,23 @@ class _LoginState extends State<Login> {
 
       if (res == 'failure') {
         setState(() {
-          fill = 0;
-          err = 0;
+          _clear();
           inv = 1;
         });
       } else {
         setState(() {
-          fill = 0;
-          inv = 0;
+          _clear();
           err = 1;
         });
       }
-    }
+      // }
+    }).catchError((error) {
+      setState(() {
+        _clear();
+        // spin = 0;
+        err = 1;
+      });
+    });
   }
 
   void _changeLang() {
@@ -105,6 +93,7 @@ class _LoginState extends State<Login> {
       fill = 0;
       err = 0;
       net = 0;
+      spin = 0;
     });
   }
 
@@ -299,7 +288,10 @@ class _LoginState extends State<Login> {
                                   //         ),
                                   // ),
 
-                                  if (fill == 0 && inv == 0 && err == 0 && net == 0)
+                                  if (fill == 0 &&
+                                      inv == 0 &&
+                                      err == 0 &&
+                                      net == 0)
                                     Container(
                                       child: const Text(
                                         "",
