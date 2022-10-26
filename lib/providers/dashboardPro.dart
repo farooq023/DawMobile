@@ -44,7 +44,7 @@ class DashboardPro with ChangeNotifier {
         res['Result']['NewOutgoingInboxCount'];
     // int newM = int.parse(res['Result']['NewInternalInboxCount']) + int.parse(res['Result']['NewOutgoingInboxCount']);
 
-    if (LanguageProvider.appLocale == Locale('ar')) {
+    if (LanguageProvider.appLocale == const Locale('ar')) {
       ArabicNumbers arabicNumber = ArabicNumbers();
       
       // totalMails.add(newM);

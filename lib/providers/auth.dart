@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import './languageProvider.dart';
-import 'dart:io';
+// import 'dart:io';
 
 class Auth with ChangeNotifier {
   String accessToken = '';
@@ -41,7 +41,7 @@ class Auth with ChangeNotifier {
     //    print("Exception on Socket "+error.toString());
     //  });
 
-      print('i am being executed');
+      // print('i am being executed');
 
       const url = 'http://10.0.190.191:51/token';
       var response = await http.post(
@@ -82,7 +82,7 @@ class Auth with ChangeNotifier {
 
         userID = res['Result']['UserId'];
 
-        if (LanguageProvider.appLocale == Locale('ar')) {
+        if (LanguageProvider.appLocale == const Locale('ar')) {
           name = res['Result']['UserFullName'];
           jobTitle = res['Result']['JobTitle'];
         } else {
@@ -95,22 +95,22 @@ class Auth with ChangeNotifier {
         return 'failure';
       }
     } catch (e) {
-      print('errr caught');
+      // print('errr caught');
       return 'error';
     }
   }
 
-  String checker() {
-    Future.delayed(Duration(seconds: 3), () {
-      if (!isAuth) {
-        print('i am returning error');
-        return 'e';
-      } else {
-        return '';
-      }
-    });
-    return '';
-  }
+  // String checker() {
+  //   Future.delayed(Duration(seconds: 3), () {
+  //     if (!isAuth) {
+  //       print('i am returning error');
+  //       return 'e';
+  //     } else {
+  //       return '';
+  //     }
+  //   });
+  //   return '';
+  // }
 
   Future<void> logout() async {
     accessToken = '';
@@ -131,6 +131,6 @@ class Auth with ChangeNotifier {
         'Authorization': 'Bearer $accessToken',
       },
     );
-    print('logged out');
+    // print('logged out');
   }
 }

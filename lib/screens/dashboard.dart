@@ -1,3 +1,4 @@
+import 'package:daw/widgets/changeLangButton.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -105,6 +106,9 @@ class _DashboardState extends State<Dashboard> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         title: Text(AppLocalizations.of(context)!.dashboard),
+        actions: [
+          ChangeLang()
+        ],
       ),
       drawer: const MainDrawer(),
       body: _received

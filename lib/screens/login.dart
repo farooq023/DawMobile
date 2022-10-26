@@ -4,8 +4,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:io';
 
 import '../providers/auth.dart';
-
 import '../providers/languageProvider.dart';
+
+import '../widgets/changeLangButton.dart';
 
 class Login extends StatefulWidget {
   static const routeName = '/login';
@@ -50,10 +51,8 @@ class _LoginState extends State<Login> {
       spin = 1;
     });
 
-
     Socket.connect('10.0.190.191', 50, timeout: const Duration(seconds: 3))
         .then((socket) async {
-
       String res =
           await Provider.of<Auth>(context, listen: false).login(name, pass);
 
@@ -134,11 +133,12 @@ class _LoginState extends State<Login> {
                   // color: Colors.purple,
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: IconButton(
-                      color: Theme.of(context).primaryColor,
-                      onPressed: _changeLang,
-                      icon: Icon(Icons.language),
-                    ),
+                    // child: IconButton(
+                    //   color: Theme.of(context).primaryColor,
+                    //   onPressed: _changeLang,
+                    //   icon: Icon(Icons.language),
+                    // ),
+                    child: ChangeLang(btnColor: Theme.of(context).primaryColor),
                   ),
                 ),
                 Container(

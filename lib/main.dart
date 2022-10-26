@@ -91,12 +91,12 @@ class _MyAppState extends State<MyApp> {
           ),
 
           // home: auth.isAuth ? Login() : Dashboard(),
-          home: auth.isAuth ? Login() : Inbox(),
+          home: auth.isAuth ? Login() : const Inbox(),
           // home: Login(),
           routes: {
             Login.routeName: (ctx) => Login(),
             Dashboard.routeName: (ctx) => Dashboard(),
-            Inbox.routeName: (ctx) => Inbox(),
+            Inbox.routeName: (ctx) => const Inbox(),
           },
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:daw/widgets/changeLangButton.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -75,7 +76,7 @@ class _InboxState extends State<Inbox> {
   }
 
   void callProviders() async {
-    print('now calling Providers');
+    // print('now calling Providers');
     _setInbox =
         await Provider.of<InboxPro>(context, listen: false).getFullInbox();
     _received = true;
@@ -90,9 +91,6 @@ class _InboxState extends State<Inbox> {
     });
   }
 
-  // void setActionValues() {
-  //   setState(() {});
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +118,9 @@ class _InboxState extends State<Inbox> {
                     ),
                   ),
                 ]
-              : null,
+              : [
+                ChangeLang(),
+              ],
         ),
         drawer: const MainDrawer(),
         body: _received
