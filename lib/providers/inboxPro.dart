@@ -7,41 +7,39 @@ class InboxPro with ChangeNotifier {
   String accessToken;
   int uID;
 
-  // String uName;
-
-  // String name = '';
-  // String jobTitle = '';
-
   InboxPro(this.accessToken, this.uID);
 
-  // List<Map> savedInbox = [];
+  var ibx;
+  bool rcvd = false;
 
   Future<List<Map>> getDashboardInbox() async {
-    String url = 'http://10.0.190.191:51/api/Dashboard/UserInbox?UserID=$uID';
-    var response = await http.get(
-      Uri.parse(url),
-      headers: {
-        'Authorization': 'Bearer $accessToken',
-      },
-    );
+    if (!rcvd) {
+      String url = 'http://10.0.190.191:51/api/Dashboard/UserInbox?UserID=$uID';
+      var response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+        },
+      );
 
-    var res = await json.decode(response.body);
+      var res = await json.decode(response.body);
 
-    // List<Map> receivedInbox = res['Result']['Data'];
-    var receivedInbox = res['Result']['Data'];
+      // List<Map> ibx = res['Result']['Data'];
+      ibx = res['Result']['Data'];
+      rcvd = true;
+    }
 
     // print('******* allocated received list *******');
-    print(receivedInbox);
 
     List<Map> setInbox = [];
 
-    for (int i = 0; i < receivedInbox.length; i++) {
+    for (int i = 0; i < ibx.length; i++) {
       setInbox.add(
         {
-          "Sender": receivedInbox[i]['Sender'],
-          "WFBeginDate": receivedInbox[i]['WFBeginDate'],
-          "SUBJECT": receivedInbox[i]['SUBJECT'],
-          "wfTypeDesc": receivedInbox[i]['wfTypeDesc'],
+          "Sender": ibx[i]['Sender'],
+          "WFBeginDate": ibx[i]['WFBeginDate'],
+          "SUBJECT": ibx[i]['SUBJECT'],
+          "wfTypeDesc": ibx[i]['wfTypeDesc'],
         },
       );
     }
@@ -49,7 +47,7 @@ class InboxPro with ChangeNotifier {
     // print('******sending all the setInbox.******');
 
     // dashboardInbox.add(newM);
-    // dashboardInbox.add(res['Result']['ReceivedInboxCount']);
+    // dashboardInbox.add(res['Result']['ibxCount']);
     // dashboardInbox.add(res['Result']['BackInboxCount']);
     // dashboardInbox.add(res['Result']['BackToCreatorInboxCount']);
 
@@ -57,7 +55,6 @@ class InboxPro with ChangeNotifier {
   }
 
   Future<List<Map>> getFullInbox() async {
-    print(' **** API called **** ');
     String url = 'http://10.0.190.191:51/api/WFInbox/GetWfinbox';
     var response = await http.post(
       Uri.parse(url),
@@ -70,16 +67,14 @@ class InboxPro with ChangeNotifier {
     );
 
     var res = await json.decode(response.body);
-    var receivedInbox = res['Result']['Data'];
-
-    // return receivedInbox;
+    var ibx = res['Result']['Data'];
 
     List<Map> setInbox = [];
     DateTime today = DateTime.now();
     String dateStr = "${today.day}/${today.month}/${today.year}";
-    for (int i = 0; i < receivedInbox.length; i++) {
+    for (int i = 0; i < ibx.length; i++) {
       String beginDate;
-      var comparer = receivedInbox[i]['WFBeginDate'].split(' ');
+      var comparer = ibx[i]['WFBeginDate'].split(' ');
       if (comparer[0] == dateStr) {
         beginDate = comparer[1];
       } else {
@@ -88,45 +83,43 @@ class InboxPro with ChangeNotifier {
       if (LanguageProvider.appLocale == Locale('ar')) {
         setInbox.add(
           {
-            "Sender": receivedInbox[i]['Sender'],
+            "Sender": ibx[i]['Sender'],
             "WFBeginDate": beginDate,
-            "SUBJECT": receivedInbox[i]['SUBJECT'],
-            "StatusID": receivedInbox[i]['StatusID'],
-            "RequisitionNo": receivedInbox[i]['RequisitionNo'],
+            "SUBJECT": ibx[i]['SUBJECT'],
+            "StatusID": ibx[i]['StatusID'],
+            "RequisitionNo": ibx[i]['RequisitionNo'],
             //
             "isChecked": false, //declaring by self to enable checkBoxes
             //
-            "DETID": receivedInbox[i]['DETID'], //primary key
+            "DETID": ibx[i]['DETID'], //primary key
             //
-            "EnableTransfer": receivedInbox[i]['EnableTransfer'],
-            "EnableStartNewWF": receivedInbox[i]['EnableStartNewWF'],
-            "EnableCompleteTask": receivedInbox[i]['EnableCompleteTask'],
-            "EnableAddNotes": receivedInbox[i]['EnableAddNotes'],
+            "EnableTransfer": ibx[i]['EnableTransfer'],
+            "EnableStartNewWF": ibx[i]['EnableStartNewWF'],
+            "EnableCompleteTask": ibx[i]['EnableCompleteTask'],
+            "EnableAddNotes": ibx[i]['EnableAddNotes'],
           },
         );
       } else {
         setInbox.add(
           {
-            "Sender": receivedInbox[i]['SenderEn'],
+            "Sender": ibx[i]['SenderEn'],
             "WFBeginDate": beginDate,
-            "SUBJECT": receivedInbox[i]['SUBJECT'],
-            "StatusID": receivedInbox[i]['StatusID'],
-            "RequisitionNo": receivedInbox[i]['RequisitionNo'],
+            "SUBJECT": ibx[i]['SUBJECT'],
+            "StatusID": ibx[i]['StatusID'],
+            "RequisitionNo": ibx[i]['RequisitionNo'],
             //
             "isChecked": false, //declaring by self to enable checkBoxes
             //
-            "DETID": receivedInbox[i]['DETID'], //primary key
+            "DETID": ibx[i]['DETID'], //primary key
             //
-            "EnableTransfer": receivedInbox[i]['EnableTransfer'],
-            "EnableStartNewWF": receivedInbox[i]['EnableStartNewWF'],
-            "EnableCompleteTask": receivedInbox[i]['EnableCompleteTask'],
-            "EnableAddNotes": receivedInbox[i]['EnableAddNotes'],
+            "EnableTransfer": ibx[i]['EnableTransfer'],
+            "EnableStartNewWF": ibx[i]['EnableStartNewWF'],
+            "EnableCompleteTask": ibx[i]['EnableCompleteTask'],
+            "EnableAddNotes": ibx[i]['EnableAddNotes'],
           },
         );
       }
     }
-
-    // savedInbox = setInbox;
 
     return setInbox;
   }

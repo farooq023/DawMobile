@@ -430,7 +430,7 @@ class _InboxState extends State<Inbox> {
                               size: 28,
                             ),
                             Text(
-                              'No mails',
+                              AppLocalizations.of(context)!.nom,
                               style: TextStyle(
                                 fontSize: 25,
                                 fontWeight: FontWeight.bold,

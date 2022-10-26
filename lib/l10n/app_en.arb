@@ -12,6 +12,7 @@
     "rtrnd":"Returned",
     "rtc":"Returned to Creator",
     "err":"Host Unreachable!",
+    "nom":"No mails!",
     
     "inbox":"Inbox",
     "dashboard":"Dashboard",
