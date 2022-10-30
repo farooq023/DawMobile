@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 
 import '../providers/fileProvider.dart';
 
@@ -15,9 +16,10 @@ class VsIdList extends StatefulWidget {
 }
 
 class _VsIdListState extends State<VsIdList> {
-  // List<Map> vsids = [];
   dynamic vsids = [];
   bool received = false;
+  int currVsId = 0;
+  String url = '';
 
   @override
   void initState() {
@@ -25,18 +27,38 @@ class _VsIdListState extends State<VsIdList> {
   }
 
   void callProviders() async {
-    print('now calling Provider');
     vsids = await Provider.of<FileProvider>(context, listen: false)
         .getVsIds(widget.detID);
-    print('rcvd from provider');
+    // print('rcvd from provider');
+
     received = true;
+    setState(() {});
+
+    fetchFileFromUrl();
+  }
+
+  void fetchFileFromUrl() async {
+    // print('now fetching url');
+    // print(widget.detID);
+    // print(vsids[currVsId].toString());
+
+    // print('successfully rcvd url');
+    url = '';
+    setState(() {});
+
+    url = await Provider.of<FileProvider>(context, listen: false)
+        .getFileUrl(widget.detID, vsids[currVsId]['vsID']);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     var mSize = MediaQuery.of(context).size;
-    var mHeight = mSize.height;
+    // var mHeight = mSize.height;
+    var mHeight = MediaQuery.of(context).size.height -
+        AppBar().preferredSize.height -
+        MediaQuery.of(context).padding.top -
+        MediaQuery.of(context).padding.bottom;
     var mWidth = mSize.width;
 
     return Scaffold(
@@ -45,170 +67,151 @@ class _VsIdListState extends State<VsIdList> {
         backgroundColor: Theme.of(context).primaryColor,
         title: Text(widget.subject),
       ),
-      body: received
-          ? Container(
-              child: ListView.builder(
-                itemCount: vsids.length,
-                itemBuilder: (BuildContext ctxt, int i) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => FileViewer(
-                            widget.detID,
-                            vsids[i]['vsID'],
+      body: SafeArea(
+        child: received
+            ? Container(
+                child: Column(
+                  children: [
+                    Container(
+                      height: mHeight * 0.1,
+                      width: mWidth,
+                      // color: Colors.red,
+                      padding: const EdgeInsets.all(15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '${vsids[currVsId]['CorrspDesc']}',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    child: Container(
-                        height: mHeight * 0.1,
-                        // padding: const EdgeInsets.all(6),
-                        // decoration: BoxDecoration(
-                        //   border: Border.all(
-                        //     color: Colors.black,
-                        //     width: 1,
-                        //   ),
-                        // ),
-                        child: Row(
-                          children: [
-                            Container(
-                              // width: mWidth * 0.2375,
-                              width: mWidth * 0.20,
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  '${vsids[i]['Serial']}',
-                                  style: const TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                    // color: Colors.blue,
+                          Container(
+                            child: Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                  onPressed: currVsId > 0
+                                      ? () {
+                                          setState(() {
+                                            currVsId--;
+                                          });
+                                          fetchFileFromUrl();
+                                        }
+                                      : null,
+                                  icon: Icon(
+                                    Icons.arrow_back_ios,
+                                    color: currVsId > 0
+                                        ? Theme.of(context).primaryColor
+                                        : null,
                                   ),
                                 ),
-                              ),
-                            ),
-                            Container(
-                              // decoration: BoxDecoration(
-                              //   border: Border.all(
-                              //     color: Colors.black,
-                              //     width: 1,
-                              //   ),
-                              // ),
-                              width: mWidth * 0.80,
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  '${vsids[i]['CorrspDesc']}',
-                                  style: const TextStyle(
-                                    fontSize: 22,
+                                Text(
+                                  '${currVsId + 1} / ${vsids.length}',
+                                  style: TextStyle(
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    // color: Colors.blue,
+                                    color: Theme.of(context).primaryColor,
                                   ),
                                 ),
-                              ),
+                                IconButton(
+                                  onPressed: currVsId + 1 == vsids.length
+                                      ? null
+                                      : () {
+                                          setState(() {
+                                            currVsId++;
+                                          });
+                                          fetchFileFromUrl();
+                                        },
+                                  icon: Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: currVsId + 1 == vsids.length
+                                        ? null
+                                        : Theme.of(context).primaryColor,
+                                    // color: 1==1 ? Theme.of(context).primaryColor : null,
+                                  ),
+                                ),
+                              ],
                             ),
-                            // Divider(thickness: 2),
-                          ],
-                        )
-                        // Row(       Text(vsids[i]['CorrspDesc']),
-                        //   children: [
-                        //     Column(
-                        //       children: const [
-                        //         Align(
-                        //           alignment: Alignment(0, -1),
-                        //           child: Icon(
-                        //             Icons.account_circle,
-                        //             size: 48,
-                        //           ),
-                        //         ),
-                        //         // Align(
-                        //         //   alignment: Alignment.center,
-                        //         //   child: iconsList[_setInbox[i]['StatusID'] - 1],
-                        //         // ),
-                        //       ],
-                        //     ),
-                        //     Container(
-                        //       // decoration: BoxDecoration(
-                        //       //   border: Border.all(
-                        //       //     color: Colors.black,
-                        //       //     width: 2,
-                        //       //   ),
-                        //       // ),
-                        //       // width: mWidth * 0.782,
-                        //       width: mWidth * 0.81,
-                        //       child: Column(
-                        //         crossAxisAlignment: CrossAxisAlignment.start,
-                        //         children: [
-                        //           Row(
-                        //             mainAxisAlignment:
-                        //                 MainAxisAlignment.spaceBetween,
-                        //             children: [
-                        //               Container(
-                        //                 width: mWidth * 0.45,
-                        //                 child: Text(
-                        //                   "${_setInbox[i]['Sender']}",
-                        //                   style: const TextStyle(
-                        //                     fontSize: 22,
-                        //                     fontWeight: FontWeight.bold,
-                        //                     // color: Colors.blue,
-                        //                   ),
-                        //                   maxLines: 1,
-                        //                 ),
-                        //               ),
-                        //               Container(
-                        //                 width: mWidth * 0.25,
-                        //                 child: Align(
-                        //                   alignment: const Alignment(1, 0),
-                        //                   child: Text(
-                        //                     "${_setInbox[i]['WFBeginDate']}",
-                        //                     style: const TextStyle(
-                        //                       fontSize: 15,
-                        //                       // fontWeight: FontWeight.bold,
-                        //                       // color: Colors.blue,
-                        //                     ),
-                        //                     maxLines: 1,
-                        //                   ),
-                        //                 ),
-                        //               ),
-                        //             ],
-                        //           ),
-                        //           Container(
-                        //             width: mWidth * 0.45,
-                        //             child: Text(
-                        //               "${_setInbox[i]['SUBJECT']}",
-                        //               style: const TextStyle(
-                        //                 fontSize: 18,
-                        //                 // color: Colors.blue,
-                        //               ),
-                        //               maxLines: 1,
-                        //             ),
-                        //           ),
-                        //           Container(
-                        //             width: mWidth * 0.85,
-                        //             child: Text(
-                        //               "${_setInbox[i]['RequisitionNo']}",
-                        //               style: const TextStyle(
-                        //                 fontSize: 15,
-                        //                 // color: Colors.blue,
-                        //               ),
-                        //               maxLines: 1,
-                        //             ),
-                        //           ),
-                        //           // const Divider(thickness: 1),
-                        //         ],
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
-                        ),
-                  );
-                },
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: mHeight * 0.9,
+                      child: Center(
+                        child: url != ''
+                            ? const PDF(
+                                autoSpacing: true,
+                                fitEachPage: true,
+                              ).fromUrl(
+                                url,
+                              )
+                            : const CircularProgressIndicator(),
+                      ),
+                    )
+                  ],
+                ),
+                // child: ListView.builder(
+                //   itemCount: vsids.length,
+                //   itemBuilder: (BuildContext ctxt, int i) {
+                //     return GestureDetector(
+                //       onTap: () {
+                //         Navigator.push(
+                //           context,
+                //           MaterialPageRoute(
+                //             builder: (context) => FileViewer(
+                //               widget.detID,
+                //               vsids[i]['vsID'],
+                //             ),
+                //           ),
+                //         );
+                //       },
+                //       child: Container(
+                //         height: mHeight * 0.1,
+                //         child: Row(
+                //           children: [
+                //             Container(
+                //               width: mWidth * 0.20,
+                //               child: Align(
+                //                 alignment: Alignment.center,
+                //                 child: Text(
+                //                   '${vsids[i]['Serial']}',
+                //                   style: const TextStyle(
+                //                     fontSize: 22,
+                //                     fontWeight: FontWeight.bold,
+                //                     // color: Colors.blue,
+                //                   ),
+                //                 ),
+                //               ),
+                //             ),
+                //             Container(
+                //               width: mWidth * 0.80,
+                //               child: Align(
+                //                 alignment: Alignment.center,
+                //                 child: Text(
+                //                   '${vsids[i]['CorrspDesc']}',
+                //                   style: const TextStyle(
+                //                     fontSize: 22,
+                //                     fontWeight: FontWeight.bold,
+                //                     // color: Colors.blue,
+                //                   ),
+                //                 ),
+                //               ),
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //     );
+                //   },
+                // ),
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
               ),
-            )
-          : Center(
-              child: CircularProgressIndicator(),
-            ),
+      ),
     );
   }
 }

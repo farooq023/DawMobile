@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import './languageProvider.dart';
+import './ipProvider.dart';
 // import 'dart:io';
 
 class Auth with ChangeNotifier {
@@ -14,11 +15,11 @@ class Auth with ChangeNotifier {
 
   ///********* */
 
-  // String accessToken = 'jVhzB7lOtMYSC74yLSBUmWP9cino1yiq_JFHjRUh6U50KcwqAhlN75q3qg7EI5e0eQL-P54Xgp9eJzrcYUds5hlSgV6rx7w_lLDtOcCuN1xIbQGU91yg0qAYFUrF8xAxRTOTLfl0BxblLS5YvhrndZlXVVerr4O-8YZh_JIHir5IJDrk-pcgLcU0_r_uEnSFsNZt9aNvt4k138Z9yVyBhECPkG66u9pvIFq7snLtDTusMrHYiG_zGhGSmGgtzyCuGmTFVajPggWN88O2UMAHdw';
+  // String accessToken = 'ZjU83PyHnHiR1UTb-pUcEjkUHhZk6ex4i4K2qGFGKVvrqtppnCgOZXkSsiEA4-4NWkMbwUGXKUe_AoOOmDmJq_Gdxi7bKPrLbFIDvAAeYRRdjNzcYhfctLcZ2ueeSE2DNfnp1oLg74uD7Py97vFsRDCYAyfp9ld1JMFJpiV4Ab2jvuymwnXo0Fo0cYYY-cPFxmR90Ku77vISXajxfe397G5CrmFeYSbbXjc2iGGN8WWrCGGYyPhkI5tDw-MrByyWPSPcMesboPAjAMbUfvbWlw';
   // String userName = 'dawqa_3';
   // int userID = 4;
   // String name = 'الامين المساعد للمالية والادارية';
-  // String jobTitle = 'الامين المساعد للمالية والادارية';
+  // String jobTitle = 'English';
 
   bool get isAuth {
     return accessToken == '';
@@ -26,24 +27,9 @@ class Auth with ChangeNotifier {
 
   Future<String> login(String un, String pass) async {
     try {
-      // var result = await InternetAddress.lookup('10.0.190.191');
-      // // if (!result.isNotEmpty && !result[0].rawAddress.isNotEmpty) {
-      // //   throw Error;
-      // // }
-      // if (result.isNotEmpty) {
-      //   throw Error;
-      // }
+      // const url = 'http://10.0.190.191:51/token';
 
-    //   Socket.connect('10.0.190.191', 50, timeout: Duration(seconds: 3)).then((socket){
-    //    print("Success");
-    //    socket.destroy();
-    //  }).catchError((error){
-    //    print("Exception on Socket "+error.toString());
-    //  });
-
-      // print('i am being executed');
-
-      const url = 'http://10.0.190.191:51/token';
+      var url = '${IpProvider.ip}token';
       var response = await http.post(
         Uri.parse(url),
         headers: {
@@ -68,7 +54,7 @@ class Auth with ChangeNotifier {
         //Now Fetching UserInfo i.e. (UserID, Employee Name & Job Title)
 
         String url =
-            'http://10.0.190.191:51/api/Common/GetUserInfo?userName=$userName&LogLogin=true&ActionUserID=';
+            '${IpProvider.ip}api/Common/GetUserInfo?userName=$userName&LogLogin=true&ActionUserID=';
         response = await http.get(
           Uri.parse(url),
           headers: {
@@ -95,42 +81,32 @@ class Auth with ChangeNotifier {
         return 'failure';
       }
     } catch (e) {
-      // print('errr caught');
+      print('***** failed2 *****');
       return 'error';
     }
   }
 
-  // String checker() {
-  //   Future.delayed(Duration(seconds: 3), () {
-  //     if (!isAuth) {
-  //       print('i am returning error');
-  //       return 'e';
-  //     } else {
-  //       return '';
-  //     }
-  //   });
-  //   return '';
-  // }
-
-  Future<void> logout() async {
+  void logout() {
     accessToken = '';
     userName = '';
     userID = 0;
+    name = '';
+    jobTitle = '';
 
     notifyListeners();
-    const url = 'http://10.0.190.191:51/api/Common/Logout';
+    var url = '${IpProvider.ip}api/Common/Logout';
     // var response = await http.get(
     //   Uri.parse(url),
     //   headers: {
     //     'Authorization': 'Bearer $accessToken',
     //   },
     // );
-    await http.get(
+    http.get(
       Uri.parse(url),
       headers: {
         'Authorization': 'Bearer $accessToken',
       },
     );
-    // print('logged out');
+    print('logged out');
   }
 }

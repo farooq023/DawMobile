@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import './ipProvider.dart';
 
 class FileProvider with ChangeNotifier {
   String accessToken;
@@ -11,7 +12,7 @@ class FileProvider with ChangeNotifier {
   Future<dynamic> getVsIds(double dDetId) async {
     int detId = dDetId.toInt();
     String url =
-        'http://10.0.190.191:51/api/WFLaunch/GetAttachsByDetID?userID=$uID&DetId=$detId';
+        '${IpProvider.ip}api/WFLaunch/GetAttachsByDetID?userID=$uID&DetId=$detId';
     var response = await http.get(
       Uri.parse(url),
       headers: {
@@ -30,7 +31,7 @@ class FileProvider with ChangeNotifier {
   // Future<String> getFileUrl(double dDetId) async {
   //   int detId = dDetId.toInt();
   //   String url =
-  //       'http://10.0.190.191:51/api/WFLaunch/GetAttachsByDetID?userID=$uID&DetId=$detId';
+  //       '${IpProvider.ip}api/WFLaunch/GetAttachsByDetID?userID=$uID&DetId=$detId';
   //   var response = await http.get(
   //     Uri.parse(url),
   //     headers: {
@@ -94,7 +95,7 @@ class FileProvider with ChangeNotifier {
     int detId = dDetId.toInt();
 
     String url =
-        'http://10.0.190.191:51/api/Common/GetFileNetDoc?userID=$uID&vsid=$vsID&DetId=$detId&PageName=a&DocTypeCode=0';
+        '${IpProvider.ip}api/Common/GetFileNetDoc?userID=$uID&vsid=$vsID&DetId=$detId&PageName=a&DocTypeCode=0';
 
     var response = await http.get(
       Uri.parse(url),

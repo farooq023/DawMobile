@@ -111,41 +111,43 @@ class _DashboardState extends State<Dashboard> {
         ],
       ),
       drawer: const MainDrawer(),
-      body: _received
-          ? Container(
-              height: mHeight,
-              width: mWidth,
-              padding: const EdgeInsets.all(8),
-              // decoration: BoxDecoration(
-              //   // color: Theme.of(context).backgroundColor,
-              //   border: Border.all(
-              //     color: Colors.black,
-              //     width: 2,
-              //   ),
-              // ),
-              child: Container(
-                child: GridView(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    mainAxisSpacing: 11,
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 11,
-                    childAspectRatio: 4/2.55,
-                    // childAspectRatio: mWidth * 0.4 / mHeight * 0.05,
+      body: SafeArea(
+        child: _received
+            ? Container(
+                height: mHeight,
+                width: mWidth,
+                padding: const EdgeInsets.all(8),
+                // decoration: BoxDecoration(
+                //   // color: Theme.of(context).backgroundColor,
+                //   border: Border.all(
+                //     color: Colors.black,
+                //     width: 2,
+                //   ),
+                // ),
+                child: Container(
+                  child: GridView(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      mainAxisSpacing: 11,
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 11,
+                      childAspectRatio: 4/2.55,
+                      // childAspectRatio: mWidth * 0.4 / mHeight * 0.05,
+                    ),
+                    children: [
+                      buildGridTile('$newM', AppLocalizations.of(context)!.neww, Colors.green),
+                      buildGridTile('$recM', AppLocalizations.of(context)!.rcvd, Colors.pink),
+                      buildGridTile('$retM', AppLocalizations.of(context)!.rtrnd, Colors.blue),
+                      buildGridTile('$reC', AppLocalizations.of(context)!.rtc, Colors.purple),
+                    ],
                   ),
-                  children: [
-                    buildGridTile('$newM', AppLocalizations.of(context)!.neww, Colors.green),
-                    buildGridTile('$recM', AppLocalizations.of(context)!.rcvd, Colors.pink),
-                    buildGridTile('$retM', AppLocalizations.of(context)!.rtrnd, Colors.blue),
-                    buildGridTile('$reC', AppLocalizations.of(context)!.rtc, Colors.purple),
-                  ],
+                ),
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
-            )
-          : Center(
-              child: CircularProgressIndicator(
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
+      ),
     );
   }
 }

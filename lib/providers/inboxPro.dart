@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import './languageProvider.dart';
+import './ipProvider.dart';
 
 class InboxPro with ChangeNotifier {
   String accessToken;
@@ -14,7 +15,7 @@ class InboxPro with ChangeNotifier {
 
   Future<List<Map>> getDashboardInbox() async {
     if (!rcvd) {
-      String url = 'http://10.0.190.191:51/api/Dashboard/UserInbox?UserID=$uID';
+      String url = '${IpProvider.ip}api/Dashboard/UserInbox?UserID=$uID';
       var response = await http.get(
         Uri.parse(url),
         headers: {
@@ -44,18 +45,11 @@ class InboxPro with ChangeNotifier {
       );
     }
 
-    // print('******sending all the setInbox.******');
-
-    // dashboardInbox.add(newM);
-    // dashboardInbox.add(res['Result']['ibxCount']);
-    // dashboardInbox.add(res['Result']['BackInboxCount']);
-    // dashboardInbox.add(res['Result']['BackToCreatorInboxCount']);
-
     return setInbox;
   }
 
   Future<List<Map>> getFullInbox() async {
-    String url = 'http://10.0.190.191:51/api/WFInbox/GetWfinbox';
+    String url = '${IpProvider.ip}api/WFInbox/GetWfinbox';
     var response = await http.post(
       Uri.parse(url),
       headers: {

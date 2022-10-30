@@ -49,6 +49,10 @@ class _MainDrawerState extends State<MainDrawer> {
               ? () {
                   Provider.of<Auth>(context, listen: false).logout();
                   Navigator.pushReplacementNamed(context, '/login');
+                  // Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route route) => false);
+
+                  // Navigator.popUntil(context, ModalRoute.withName('/login'));
+                  // Navigator.pushNamedAndRemoveUntil(context, "/login", (r) => false);
                 }
               : () {
                   Provider.of<LanguageProvider>(context, listen: false)
@@ -149,8 +153,8 @@ class _MainDrawerState extends State<MainDrawer> {
                     buildListTile(Icons.inbox,
                         AppLocalizations.of(context)!.inbox, '/inbox'),
 
-                    buildListTile(Icons.language,
-                        AppLocalizations.of(context)!.changeLang, 'changeLang'),
+                    // buildListTile(Icons.language,
+                    //     AppLocalizations.of(context)!.changeLang, 'changeLang'),
                     buildListTile(Icons.logout,
                         AppLocalizations.of(context)!.logOut, 'logout'),
                     // buildListTile(Icons.outbox,'Outgoing Workflows',),

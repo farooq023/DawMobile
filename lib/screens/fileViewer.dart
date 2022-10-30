@@ -26,11 +26,9 @@ class _FileViewerState extends State<FileViewer> {
   }
 
   void callProviders() async {
-    // print( '****widget.detID****');
-    // print( widget.detID);
     url = await Provider.of<FileProvider>(context, listen: false)
         .getFileUrl(widget.detID, widget.vsID);
-        
+
     setState(() {});
   }
 
@@ -44,16 +42,17 @@ class _FileViewerState extends State<FileViewer> {
       ),
       // drawer: const MainDrawer(),
       body: Container(
-          child: Center(
-        child: url != ''
-            ? const PDF(
-                autoSpacing: true,
-                fitEachPage: true,
-              ).fromUrl(
-                url,
-              )
-            : CircularProgressIndicator(),
-      )),
+        child: Center(
+          child: url != ''
+              ? const PDF(
+                  autoSpacing: true,
+                  fitEachPage: true,
+                ).fromUrl(
+                  url,
+                )
+              : const CircularProgressIndicator(),
+        ),
+      ),
     );
   }
 }

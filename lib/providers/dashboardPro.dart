@@ -5,8 +5,8 @@ import 'dart:convert';
 import 'package:arabic_numbers/arabic_numbers.dart';
 
 import './languageProvider.dart';
+import './ipProvider.dart';
 
-// import './auth.dart';
 
 class DashboardPro with ChangeNotifier {
   String accessToken;
@@ -22,7 +22,7 @@ class DashboardPro with ChangeNotifier {
     // print('***** Received request *****');
 
     String url =
-        'http://10.0.190.191:51/api/Dashboard/UserStatistics?UserID=$userID';
+        '${IpProvider.ip}api/Dashboard/UserStatistics?UserID=$userID';
     var response = await http.get(
       Uri.parse(url),
       headers: {

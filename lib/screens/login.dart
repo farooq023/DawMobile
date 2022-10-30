@@ -51,7 +51,7 @@ class _LoginState extends State<Login> {
       spin = 1;
     });
 
-    Socket.connect('10.0.190.191', 50, timeout: const Duration(seconds: 3))
+    Socket.connect('10.0.190.191', 50, timeout: Duration(seconds: 2))
         .then((socket) async {
       String res =
           await Provider.of<Auth>(context, listen: false).login(name, pass);
@@ -60,22 +60,27 @@ class _LoginState extends State<Login> {
         spin = 0;
       });
 
+      print(res);
+
+      if (res == 'success') {
+        Navigator.pushReplacementNamed(context, '/inbox');
+      }
+
       if (res == 'failure') {
         setState(() {
           _clear();
           inv = 1;
         });
-      } else {
+      } else if (res == 'error') {
         setState(() {
           _clear();
           err = 1;
         });
       }
-      // }
     }).catchError((error) {
+      print('***** failed *****');
       setState(() {
         _clear();
-        // spin = 0;
         err = 1;
       });
     });
@@ -138,7 +143,9 @@ class _LoginState extends State<Login> {
                     //   onPressed: _changeLang,
                     //   icon: Icon(Icons.language),
                     // ),
-                    child: ChangeLang(btnColor: Theme.of(context).primaryColor),
+                    child: ChangeLang(
+                      btnColor: Theme.of(context).primaryColor,
+                    ),
                   ),
                 ),
                 Container(
