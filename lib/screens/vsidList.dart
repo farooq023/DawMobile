@@ -141,6 +141,7 @@ class _VsIdListState extends State<VsIdList> {
                     ),
                     Container(
                       height: mHeight * 0.9,
+                      padding: const EdgeInsets.all(20),
                       child: Center(
                         child: url != ''
                             ? const PDF(

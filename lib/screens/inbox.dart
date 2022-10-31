@@ -1,4 +1,3 @@
-import 'package:daw/widgets/changeLangButton.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -10,6 +9,8 @@ import '../providers/inboxPro.dart';
 import './vsidList.dart';
 
 import '../widgets/main_drawer.dart';
+import '../widgets/changeLangButton.dart';
+
 // import '../widgets/inboxTile.dart';
 
 class Inbox extends StatefulWidget {
@@ -26,10 +27,6 @@ class _InboxState extends State<Inbox> {
   bool _received = false;
   int _selection = 0;
   List<double> selectedDetIds = [];
-
-  // List<IconData> iconsList = [
-  //   Icons.noise_control_off,
-  // ];
 
   static const double iconSize = 25;
   List<Widget> iconsList = const [
@@ -72,16 +69,25 @@ class _InboxState extends State<Inbox> {
 
   @override
   void initState() {
+    print('i am opened');
     callProviders();
+    print('completed initState');
   }
 
   void callProviders() async {
-    // print('now calling Providers');
+    print('now calling Providers');
     _setInbox =
         await Provider.of<InboxPro>(context, listen: false).getFullInbox();
     _received = true;
 
-    setState(() {});
+    if (mounted) {
+      setState(() {
+        // Your state change code goes here
+      });
+    }
+
+    // setState(() {});
+    print('completed callProviders');
   }
 
   void setSelection() {
@@ -90,7 +96,6 @@ class _InboxState extends State<Inbox> {
       // _setInbox = Provider.of<InboxPro>(context, listen: false).savedInbox;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -119,8 +124,8 @@ class _InboxState extends State<Inbox> {
                   ),
                 ]
               : [
-                const ChangeLang(),
-              ],
+                  const ChangeLang(),
+                ],
         ),
         drawer: const MainDrawer(),
         body: SafeArea(
@@ -133,7 +138,7 @@ class _InboxState extends State<Inbox> {
                   //   ),
                   // ),
                   // margin: const EdgeInsets.all(8),
-        
+
                   child: _setInbox.length > 0
                       ? (_selection == 0
                           ? (ListView.builder(
@@ -190,8 +195,9 @@ class _InboxState extends State<Inbox> {
                                               ),
                                               Align(
                                                 alignment: Alignment.center,
-                                                child: iconsList[
-                                                    _setInbox[i]['StatusID'] - 1],
+                                                child: iconsList[_setInbox[i]
+                                                        ['StatusID'] -
+                                                    1],
                                               ),
                                             ],
                                           ),
@@ -278,9 +284,9 @@ class _InboxState extends State<Inbox> {
                               },
                             ))
                           :
-        
+
                           // ********* Selection container below *********
-        
+
                           ListView.builder(
                               itemCount: _setInbox.length,
                               itemBuilder: (BuildContext ctxt, int i) {

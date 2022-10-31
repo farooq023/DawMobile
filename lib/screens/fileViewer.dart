@@ -37,7 +37,6 @@ class _FileViewerState extends State<FileViewer> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
-        title: const Text(''),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       // drawer: const MainDrawer(),

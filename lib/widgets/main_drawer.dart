@@ -152,6 +152,8 @@ class _MainDrawerState extends State<MainDrawer> {
                         AppLocalizations.of(context)!.dashboard, '/dashboard'),
                     buildListTile(Icons.inbox,
                         AppLocalizations.of(context)!.inbox, '/inbox'),
+                    buildListTile(Icons.info_outline,
+                        AppLocalizations.of(context)!.iconinfo, '/iconinfo'),
 
                     // buildListTile(Icons.language,
                     //     AppLocalizations.of(context)!.changeLang, 'changeLang'),

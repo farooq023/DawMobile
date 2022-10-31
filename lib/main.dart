@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import './screens/login.dart';
 import './screens/dashboard.dart';
 import './screens/inbox.dart';
+import './screens/iconsInfo.dart';
 // import './screens/fileViewer.dart';
 
 import './providers/auth.dart';
@@ -55,9 +56,6 @@ class _MyAppState extends State<MyApp> {
           update: (_, auth, data) =>
               FileProvider(auth.accessToken, auth.userID),
         ),
-        // ChangeNotifierProvider.value(
-        //   value: LanguageProvider(),
-        // ),
       ],
       // child: MultiProvider(
       //   providers: [
@@ -97,6 +95,7 @@ class _MyAppState extends State<MyApp> {
             Login.routeName: (ctx) => Login(),
             Dashboard.routeName: (ctx) => Dashboard(),
             Inbox.routeName: (ctx) => Inbox(),
+            IconInfo.routeName: (ctx) => IconInfo(),
           },
         ),
       ),

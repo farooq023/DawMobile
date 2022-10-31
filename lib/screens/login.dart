@@ -64,9 +64,7 @@ class _LoginState extends State<Login> {
 
       if (res == 'success') {
         Navigator.pushReplacementNamed(context, '/inbox');
-      }
-
-      if (res == 'failure') {
+      } else if (res == 'failure') {
         setState(() {
           _clear();
           inv = 1;

@@ -13,9 +13,11 @@
     "rtc":"Returned to Creator",
     "err":"Host Unreachable!",
     "nom":"No mails!",
+    "toi":"Table of icons that are used in the Inbox",
     
-    "inbox":"Inbox",
     "dashboard":"Dashboard",
+    "inbox":"Inbox",
+    "iconinfo":"Icon Info",
     "changeLang":"Change Language",
     "logOut":"Log Out"
 }
