@@ -61,7 +61,7 @@ class InboxPro with ChangeNotifier {
     );
 
     var res = await json.decode(response.body);
-    var ibx = res['Result']['Data'];
+    ibx = res['Result']['Data'];
 
     List<Map> setInbox = [];
     DateTime today = DateTime.now();

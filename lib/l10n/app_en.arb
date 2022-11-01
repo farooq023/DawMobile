@@ -13,11 +13,13 @@
     "rtc":"Returned to Creator",
     "err":"Host Unreachable!",
     "nom":"No mails!",
-    "toi":"Table of icons that are used in the Inbox",
+    "toi":"Table of icons that are used in the Application",
+    "arch":"Archived",
     
     "dashboard":"Dashboard",
     "inbox":"Inbox",
     "iconinfo":"Icon Info",
+    "sent":"Sent",
     "changeLang":"Change Language",
     "logOut":"Log Out"
 }

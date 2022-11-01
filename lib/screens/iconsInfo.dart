@@ -17,42 +17,8 @@ class IconInfo extends StatelessWidget {
   final double marginTop = 5;
   // Locale myLocale = Localizations.localeOf(context);
 
-  static const double iconSize = 25;
-  List<Widget> iconss = const [
-    Icon(
-      Icons.noise_control_off,
-      color: Color(0xFF1976D2),
-      size: iconSize,
-    ),
-    Icon(
-      Icons.pending,
-      size: iconSize,
-    ),
-    Icon(
-      Icons.arrow_circle_right,
-      size: iconSize,
-    ),
-    Icon(
-      Icons.check_box,
-      size: iconSize,
-    ),
-    Icon(
-      Icons.arrow_circle_left,
-      size: iconSize,
-    ),
-    Icon(
-      Icons.archive,
-      size: iconSize,
-    ),
-    Icon(
-      Icons.cancel_rounded,
-      size: iconSize,
-    ),
-    Icon(
-      Icons.double_arrow,
-      size: iconSize,
-    ),
-  ];
+  
+  
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +28,50 @@ class IconInfo extends StatelessWidget {
         MediaQuery.of(context).padding.top -
         MediaQuery.of(context).padding.bottom;
     var mWidth = mSize.width;
+
+    const double iconSize = 25;
+    List<Widget> iconss = [
+    Icon(
+      Icons.noise_control_off,
+      color: Theme.of(context).primaryColor,
+      size: iconSize,
+    ),
+    Icon(
+      Icons.pending,
+      color: Theme.of(context).primaryColor,
+      size: iconSize,
+    ),
+    Icon(
+      Icons.arrow_circle_right,
+      color: Theme.of(context).primaryColor,
+      size: iconSize,
+    ),
+    Icon(
+      Icons.check_box,
+      color: Colors.green,
+      size: iconSize,
+    ),
+    Icon(
+      Icons.arrow_circle_left,
+      color: Colors.green,
+      size: iconSize,
+    ),
+    Icon(
+      Icons.archive,
+      color: Colors.red,
+      size: iconSize,
+    ),
+    Icon(
+      Icons.cancel_rounded,
+      color: Colors.red,
+      size: iconSize,
+    ),
+    Icon(
+      Icons.double_arrow,
+      color: Theme.of(context).primaryColor,
+      size: iconSize,
+    ),
+  ];
 
     List<String> dess =
         Provider.of<LanguageProvider>(context, listen: false).isEng

@@ -7,12 +7,14 @@ import 'package:flutter/services.dart';
 import './screens/login.dart';
 import './screens/dashboard.dart';
 import './screens/inbox.dart';
+import './screens/outbox.dart';
 import './screens/iconsInfo.dart';
 // import './screens/fileViewer.dart';
 
 import './providers/auth.dart';
 import './providers/dashboardPro.dart';
 import './providers/inboxPro.dart';
+import './providers/outboxPro.dart';
 import './providers/fileProvider.dart';
 import './providers/languageProvider.dart';
 
@@ -50,6 +52,10 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProxyProvider<Auth, InboxPro>(
           create: (ctx) => InboxPro('', 0),
           update: (_, auth, data) => InboxPro(auth.accessToken, auth.userID),
+        ),
+        ChangeNotifierProxyProvider<Auth, OutboxPro>(
+          create: (ctx) => OutboxPro('', 0),
+          update: (_, auth, data) => OutboxPro(auth.accessToken, auth.userID),
         ),
         ChangeNotifierProxyProvider<Auth, FileProvider>(
           create: (ctx) => FileProvider('', 0),
@@ -95,6 +101,7 @@ class _MyAppState extends State<MyApp> {
             Login.routeName: (ctx) => Login(),
             Dashboard.routeName: (ctx) => Dashboard(),
             Inbox.routeName: (ctx) => Inbox(),
+            Outbox.routeName: (ctx) => Outbox(),
             IconInfo.routeName: (ctx) => IconInfo(),
           },
         ),

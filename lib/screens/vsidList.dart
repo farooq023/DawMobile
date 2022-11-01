@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
+import 'package:swipe/swipe.dart';
 
 import '../providers/fileProvider.dart';
 
@@ -144,11 +145,43 @@ class _VsIdListState extends State<VsIdList> {
                       padding: const EdgeInsets.all(20),
                       child: Center(
                         child: url != ''
-                            ? const PDF(
-                                autoSpacing: true,
-                                fitEachPage: true,
-                              ).fromUrl(
-                                url,
+                            ? GestureDetector(
+                                child: const PDF(
+                                  autoSpacing: true,
+                                  fitEachPage: true,
+                                ).fromUrl(
+                                  url,
+                                ),
+                                // onHorizontalDragUpdate: (details) {
+                                //   int sensitivity = 5;
+                                //   if (details.delta.dx < -sensitivity) {
+                                //     print('swiped to right');
+                                //     if (currVsId + 1 != vsids.length) {
+                                //       setState(() {
+                                //         currVsId++;
+                                //       });
+
+                                //       fetchFileFromUrl();
+                                //     }
+                                //   } else if (details.delta.dx > sensitivity) {
+                                //     print('swiped to left');
+                                //     if (currVsId > 0) {
+                                //       setState(() {
+                                //         currVsId--;
+                                //       });
+                                //       fetchFileFromUrl();
+                                //     }
+                                //   }
+                                // }
+
+                                // onSwipeRight: currVsId + 1 == vsids.length
+                                //     ? null
+                                //     : () {
+                                //         setState(() {
+                                //           currVsId++;
+                                //         });
+                                //         fetchFileFromUrl();
+                                //       },
                               )
                             : const CircularProgressIndicator(),
                       ),

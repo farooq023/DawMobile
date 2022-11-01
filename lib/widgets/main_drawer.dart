@@ -69,7 +69,11 @@ class _MainDrawerState extends State<MainDrawer> {
   @override
   Widget build(BuildContext context) {
     var mSize = MediaQuery.of(context).size;
-    var mHeight = mSize.height;
+    // var mHeight = mSize.height;
+    var mHeight = MediaQuery.of(context).size.height -
+        AppBar().preferredSize.height -
+        MediaQuery.of(context).padding.top -
+        MediaQuery.of(context).padding.bottom;
     var mWidth = mSize.width;
 
     return Drawer(
@@ -87,7 +91,7 @@ class _MainDrawerState extends State<MainDrawer> {
           child: Column(
             children: [
               Container(
-                height: mHeight * 0.13,
+                height: mHeight * 0.15,
                 child: ListTile(
                   // dense: true,
                   // visualDensity: const VisualDensity(vertical: 4),
@@ -136,7 +140,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 ),
               ),
               Container(
-                // height: mHeight * 0.7,
+                height: mHeight * 0.85,
                 width: double.infinity,
                 // padding: EdgeInsets.all(15),
                 // decoration: BoxDecoration(
@@ -146,20 +150,41 @@ class _MainDrawerState extends State<MainDrawer> {
                 //   ),
                 // ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    buildListTile(Icons.dashboard,
-                        AppLocalizations.of(context)!.dashboard, '/dashboard'),
-                    buildListTile(Icons.inbox,
-                        AppLocalizations.of(context)!.inbox, '/inbox'),
-                    buildListTile(Icons.info_outline,
-                        AppLocalizations.of(context)!.iconinfo, '/iconinfo'),
+                    Container(
+                      child: Column(
+                        children: [
+                          buildListTile(
+                              Icons.dashboard,
+                              AppLocalizations.of(context)!.dashboard,
+                              '/dashboard'),
+                          buildListTile(Icons.inbox,
+                              AppLocalizations.of(context)!.inbox, '/inbox'),
+                          buildListTile(Icons.outbox,
+                              AppLocalizations.of(context)!.sent, '/outbox'),
+                          buildListTile(Icons.archive,
+                              AppLocalizations.of(context)!.arch, '/archived'),
+                        ],
+                      ),
+                    ),
+
+                    Container(
+                      child: Column(
+                        children: [
+                          buildListTile(
+                              Icons.info_outline,
+                              AppLocalizations.of(context)!.iconinfo,
+                              '/iconinfo'),
+                          buildListTile(Icons.logout,
+                              AppLocalizations.of(context)!.logOut, 'logout'),
+                        ],
+                      ),
+                    ),
 
                     // buildListTile(Icons.language,
                     //     AppLocalizations.of(context)!.changeLang, 'changeLang'),
-                    buildListTile(Icons.logout,
-                        AppLocalizations.of(context)!.logOut, 'logout'),
-                    // buildListTile(Icons.outbox,'Outgoing Workflows',),
                   ],
                 ),
               ),
