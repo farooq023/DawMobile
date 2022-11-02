@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-// import '../providers/archivedPro.dart';
+import '../providers/archivedPro.dart';
+
+import './vsidList.dart';
 
 import '../widgets/main_drawer.dart';
 import '../widgets/changeLangButton.dart';
@@ -10,7 +12,6 @@ import '../widgets/changeLangButton.dart';
 class Archived extends StatefulWidget {
   // const Archived({super.key});
   static const routeName = '/archived';
-
 
   @override
   State<Archived> createState() => _ArchivedState();
@@ -27,8 +28,8 @@ class _ArchivedState extends State<Archived> {
   }
 
   void callProviders() async {
-    // rcvdArchvd =
-    //     await Provider.of<OutboxPro>(context, listen: false).getFullArchived();
+    rcvdArchvd = await Provider.of<ArchivedPro>(context, listen: false)
+        .getFullArchived();
     received = true;
 
     // if (mounted) {
@@ -51,72 +52,71 @@ class _ArchivedState extends State<Archived> {
         MediaQuery.of(context).padding.top -
         MediaQuery.of(context).padding.bottom;
     var mWidth = mSize.width;
-    const double iconSize = 25;
-    List<Widget> iconsList = [
-      Icon(
-        Icons.noise_control_off,
-        color: Theme.of(context).primaryColor,
-        size: iconSize,
-      ),
-      Icon(
-        Icons.pending,
-        color: Theme.of(context).primaryColor,
-        size: iconSize,
-      ),
-      Icon(
-        Icons.arrow_circle_right,
-        color: Theme.of(context).primaryColor,
-        size: iconSize,
-      ),
-      Icon(
-        Icons.check_box,
-        color: Colors.green,
-        size: iconSize,
-      ),
-      Icon(
-        Icons.arrow_circle_left,
-        color: Colors.green,
-        size: iconSize,
-      ),
-      Icon(
-        Icons.archive,
-        color: Colors.red,
-        size: iconSize,
-      ),
-      Icon(
-        Icons.cancel_rounded,
-        color: Colors.red,
-        size: iconSize,
-      ),
-      Icon(
-        Icons.double_arrow,
-        color: Theme.of(context).primaryColor,
-        size: iconSize,
-      ),
-    ];
-
+    // const double iconSize = 25;
+    // List<Widget> iconsList = [
+    //   Icon(
+    //     Icons.noise_control_off,
+    //     color: Theme.of(context).primaryColor,
+    //     size: iconSize,
+    //   ),
+    //   Icon(
+    //     Icons.pending,
+    //     color: Theme.of(context).primaryColor,
+    //     size: iconSize,
+    //   ),
+    //   Icon(
+    //     Icons.arrow_circle_right,
+    //     color: Theme.of(context).primaryColor,
+    //     size: iconSize,
+    //   ),
+    //   Icon(
+    //     Icons.check_box,
+    //     color: Colors.green,
+    //     size: iconSize,
+    //   ),
+    //   Icon(
+    //     Icons.arrow_circle_left,
+    //     color: Colors.green,
+    //     size: iconSize,
+    //   ),
+    //   Icon(
+    //     Icons.archive,
+    //     color: Colors.red,
+    //     size: iconSize,
+    //   ),
+    //   Icon(
+    //     Icons.cancel_rounded,
+    //     color: Colors.red,
+    //     size: iconSize,
+    //   ),
+    //   Icon(
+    //     Icons.double_arrow,
+    //     color: Theme.of(context).primaryColor,
+    //     size: iconSize,
+    //   ),
+    // ];
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title: Text(AppLocalizations.of(context)!.sent),
+        title: Text(AppLocalizations.of(context)!.arch),
         actions: selection != 0
-              ? [
-                  TextButton(
-                    onPressed: setSelection,
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(
-                        color: Colors.white,
-                        // fontSize: 10,
-                      ),
+            ? [
+                TextButton(
+                  onPressed: setSelection,
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: Colors.white,
+                      // fontSize: 10,
                     ),
                   ),
-                ]
-              : [
-                  const ChangeLang(),
-                ],
+                ),
+              ]
+            : [
+                const ChangeLang(),
+              ],
       ),
       drawer: const MainDrawer(),
       body: SafeArea(
@@ -127,21 +127,21 @@ class _ArchivedState extends State<Archived> {
                         itemCount: rcvdArchvd.length,
                         itemBuilder: (BuildContext ctxt, int i) {
                           return GestureDetector(
-                            // onTap: () {
-                            //   Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //       builder: (context) => VsIdList(
-                            //         rcvdArchvd[i]['SUBJECT'],
-                            //         rcvdArchvd[i]['DETID'],
-                            //       ),
-                            //     ),
-                            //   );
-                            // },
-                            onLongPress: () {
-                              selection = 1;
-                              setState(() {});
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => VsIdList(
+                                    rcvdArchvd[i]['SUBJECT'],
+                                    rcvdArchvd[i]['DETID'],
+                                  ),
+                                ),
+                              );
                             },
+                            // onLongPress: () {
+                            //   selection = 1;
+                            //   setState(() {});
+                            // },
                             child: Container(
                               height: mHeight * 0.17,
                               padding: const EdgeInsets.all(6),
@@ -157,19 +157,19 @@ class _ArchivedState extends State<Archived> {
                                     // ),
                                     width: mWidth * 0.138,
                                     child: Column(
-                                      children: [
-                                        const Align(
+                                      children: const [
+                                        Align(
                                           alignment: Alignment(0, -1),
                                           child: Icon(
                                             Icons.account_circle,
                                             size: 48,
                                           ),
                                         ),
-                                        Align(
-                                          alignment: Alignment.center,
-                                          child: iconsList[
-                                              rcvdArchvd[i]['StatusID'] - 1],
-                                        ),
+                                        // Align(
+                                        //   alignment: Alignment.center,
+                                        //   child: iconsList[
+                                        //       rcvdArchvd[i]['StatusID'] - 1],
+                                        // ),
                                       ],
                                     ),
                                   ),
@@ -180,7 +180,6 @@ class _ArchivedState extends State<Archived> {
                                     //     width: 2,
                                     //   ),
                                     // ),
-                                    // width: mWidth * 0.782,
                                     width: mWidth * 0.81,
                                     child: Column(
                                       crossAxisAlignment:

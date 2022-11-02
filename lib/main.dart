@@ -8,6 +8,7 @@ import './screens/login.dart';
 import './screens/dashboard.dart';
 import './screens/inbox.dart';
 import './screens/outbox.dart';
+import './screens/archived.dart';
 import './screens/iconsInfo.dart';
 // import './screens/fileViewer.dart';
 
@@ -15,6 +16,7 @@ import './providers/auth.dart';
 import './providers/dashboardPro.dart';
 import './providers/inboxPro.dart';
 import './providers/outboxPro.dart';
+import './providers/archivedPro.dart';
 import './providers/fileProvider.dart';
 import './providers/languageProvider.dart';
 
@@ -57,19 +59,16 @@ class _MyAppState extends State<MyApp> {
           create: (ctx) => OutboxPro('', 0),
           update: (_, auth, data) => OutboxPro(auth.accessToken, auth.userID),
         ),
+        ChangeNotifierProxyProvider<Auth, ArchivedPro>(
+          create: (ctx) => ArchivedPro('', 0),
+          update: (_, auth, data) => ArchivedPro(auth.accessToken, auth.userID),
+        ),
         ChangeNotifierProxyProvider<Auth, FileProvider>(
           create: (ctx) => FileProvider('', 0),
           update: (_, auth, data) =>
               FileProvider(auth.accessToken, auth.userID),
         ),
       ],
-      // child: MultiProvider(
-      //   providers: [
-      //     ChangeNotifierProvider.value(
-      //       value: Auth(),
-      //     ),
-      //   ],
-      // ),
       child: Consumer2<Auth, LanguageProvider>(
         builder: (ctx, auth, lang, _) => MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -102,6 +101,7 @@ class _MyAppState extends State<MyApp> {
             Dashboard.routeName: (ctx) => Dashboard(),
             Inbox.routeName: (ctx) => Inbox(),
             Outbox.routeName: (ctx) => Outbox(),
+            Archived.routeName: (ctx) => Archived(),
             IconInfo.routeName: (ctx) => IconInfo(),
           },
         ),

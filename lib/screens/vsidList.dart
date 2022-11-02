@@ -1,16 +1,18 @@
+// import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
-import 'package:swipe/swipe.dart';
+// import 'package:swipe/swipe.dart';
 
 import '../providers/fileProvider.dart';
 
-import './fileViewer.dart';
+// import './fileViewer.dart';
 
 class VsIdList extends StatefulWidget {
   final String subject;
   final double detID;
-  const VsIdList(this.subject, this.detID);
+  VsIdList(this.subject, this.detID);
 
   @override
   State<VsIdList> createState() => _VsIdListState();
@@ -21,6 +23,9 @@ class _VsIdListState extends State<VsIdList> {
   bool received = false;
   int currVsId = 0;
   String url = '';
+
+  // final Completer<PDFViewController> _pdfViewController =
+  //     Completer<PDFViewController>();
 
   @override
   void initState() {
@@ -39,14 +44,9 @@ class _VsIdListState extends State<VsIdList> {
   }
 
   void fetchFileFromUrl() async {
-    // print('now fetching url');
-    // print(widget.detID);
-    // print(vsids[currVsId].toString());
-
-    // print('successfully rcvd url');
-    url = '';
-    setState(() {});
-
+    setState(() {
+      url = '';
+    });
     url = await Provider.of<FileProvider>(context, listen: false)
         .getFileUrl(widget.detID, vsids[currVsId]['vsID']);
     setState(() {});
@@ -55,12 +55,13 @@ class _VsIdListState extends State<VsIdList> {
   @override
   Widget build(BuildContext context) {
     var mSize = MediaQuery.of(context).size;
-    // var mHeight = mSize.height;
     var mHeight = MediaQuery.of(context).size.height -
         AppBar().preferredSize.height -
         MediaQuery.of(context).padding.top -
         MediaQuery.of(context).padding.bottom;
     var mWidth = mSize.width;
+
+    var gestureWidth = mWidth * 0.14;
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -131,7 +132,6 @@ class _VsIdListState extends State<VsIdList> {
                                     color: currVsId + 1 == vsids.length
                                         ? null
                                         : Theme.of(context).primaryColor,
-                                    // color: 1==1 ? Theme.of(context).primaryColor : null,
                                   ),
                                 ),
                               ],
@@ -145,43 +145,62 @@ class _VsIdListState extends State<VsIdList> {
                       padding: const EdgeInsets.all(20),
                       child: Center(
                         child: url != ''
-                            ? GestureDetector(
-                                child: const PDF(
-                                  autoSpacing: true,
-                                  fitEachPage: true,
-                                ).fromUrl(
-                                  url,
-                                ),
-                                // onHorizontalDragUpdate: (details) {
-                                //   int sensitivity = 5;
-                                //   if (details.delta.dx < -sensitivity) {
-                                //     print('swiped to right');
-                                //     if (currVsId + 1 != vsids.length) {
-                                //       setState(() {
-                                //         currVsId++;
-                                //       });
-
-                                //       fetchFileFromUrl();
-                                //     }
-                                //   } else if (details.delta.dx > sensitivity) {
-                                //     print('swiped to left');
-                                //     if (currVsId > 0) {
-                                //       setState(() {
-                                //         currVsId--;
-                                //       });
-                                //       fetchFileFromUrl();
-                                //     }
-                                //   }
-                                // }
-
-                                // onSwipeRight: currVsId + 1 == vsids.length
-                                //     ? null
-                                //     : () {
-                                //         setState(() {
-                                //           currVsId++;
-                                //         });
-                                //         fetchFileFromUrl();
-                                //       },
+                            ? Stack(
+                                children: [
+                                  const PDF(
+                                    autoSpacing: true,
+                                    fitEachPage: true,
+                                  ).fromUrl(
+                                    url,
+                                  ),
+                                  Container(
+                                    width: gestureWidth,
+                                    // color: Colors.yellow,
+                                    child: GestureDetector(
+                                      // onTap: () {
+                                      //   print('object');
+                                      // },
+                                      onHorizontalDragUpdate: (details) {
+                                        // print('Horizontal detected');
+                                        int sensitivity = 5;
+                                        if (details.delta.dx > sensitivity) {
+                                          // print('swiped to left');
+                                          if (currVsId > 0) {
+                                            setState(() {
+                                              currVsId--;
+                                            });
+                                            fetchFileFromUrl();
+                                          }
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: const Alignment(1, 0),
+                                    child: Container(
+                                      width: gestureWidth,
+                                      // color: Colors.purple,
+                                      child: GestureDetector(
+                                        // onTap: () {
+                                        //   print('object2');
+                                        // },
+                                        onHorizontalDragUpdate: (details) {
+                                          // print('Horizontal detected');
+                                          int sensitivity = 5;
+                                          if (details.delta.dx < -sensitivity) {
+                                            // print('swiped to right');
+                                            if (currVsId + 1 != vsids.length) {
+                                              setState(() {
+                                                currVsId++;
+                                              });
+                                              fetchFileFromUrl();
+                                            }
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               )
                             : const CircularProgressIndicator(),
                       ),

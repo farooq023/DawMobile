@@ -4,6 +4,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../providers/outboxPro.dart';
 
+import './vsidList.dart';
+
 import '../widgets/main_drawer.dart';
 import '../widgets/changeLangButton.dart';
 
@@ -127,17 +129,17 @@ class _OutboxState extends State<Outbox> {
                         itemCount: rcvdOutbox.length,
                         itemBuilder: (BuildContext ctxt, int i) {
                           return GestureDetector(
-                            // onTap: () {
-                            //   Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //       builder: (context) => VsIdList(
-                            //         rcvdOutbox[i]['SUBJECT'],
-                            //         rcvdOutbox[i]['DETID'],
-                            //       ),
-                            //     ),
-                            //   );
-                            // },
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => VsIdList(
+                                    rcvdOutbox[i]['SUBJECT'],
+                                    rcvdOutbox[i]['DETID'],
+                                  ),
+                                ),
+                              );
+                            },
                             onLongPress: () {
                               selection = 1;
                               setState(() {});

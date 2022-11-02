@@ -119,6 +119,11 @@ class _InboxState extends State<Inbox> {
                 ]
               : [
                   const ChangeLang(),
+                  IconButton(
+                    color: Colors.white,
+                    onPressed: (){},
+                    icon: const Icon(Icons.search),
+                  )
                 ],
         ),
         drawer: const MainDrawer(),
