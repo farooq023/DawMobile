@@ -75,6 +75,14 @@ class OutboxPro with ChangeNotifier {
         beginDate = comparer[0];
       }
       if (LanguageProvider.appLocale == const Locale('ar')) {
+        String searchString =
+            obx[i]['Recipient'] == null ? '' : obx[i]['Recipient'];
+        if (obx[i]['SUBJECT'] != null) {
+          searchString += ' ' + obx[i]['SUBJECT'];
+        }
+        if (obx[i]['RequisitionNo'] != null) {
+          searchString += ' ' + obx[i]['RequisitionNo'];
+        }
         setInbox.add(
           {
             "Recipient": obx[i]['Recipient'],
@@ -91,9 +99,19 @@ class OutboxPro with ChangeNotifier {
             "EnableReTransfer": obx[i]['EnableReTransfer'],
             "EnableCancel": obx[i]['EnableCancel'],
             "EnableWithdraw": obx[i]['EnableWithdraw'],
+            //
+            "searchString": searchString
           },
         );
       } else {
+        String searchString =
+            obx[i]['RecipientEn'] == null ? '' : obx[i]['RecipientEn'];
+        if (obx[i]['SUBJECT'] != null) {
+          searchString += ' ' + obx[i]['SUBJECT'];
+        }
+        if (obx[i]['RequisitionNo'] != null) {
+          searchString += ' ' + obx[i]['RequisitionNo'];
+        }
         setInbox.add(
           {
             "Recipient": obx[i]['RecipientEn'],
@@ -110,6 +128,8 @@ class OutboxPro with ChangeNotifier {
             "EnableReTransfer": obx[i]['EnableReTransfer'],
             "EnableCancel": obx[i]['EnableCancel'],
             "EnableWithdraw": obx[i]['EnableWithdraw'],
+            //
+            "searchString": searchString
           },
         );
       }

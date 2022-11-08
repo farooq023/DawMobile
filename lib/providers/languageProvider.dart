@@ -21,4 +21,8 @@ class LanguageProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+  
+  Locale getLang(){
+    return appLocale;
+  }
 }

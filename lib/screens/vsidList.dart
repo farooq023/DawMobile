@@ -52,6 +52,20 @@ class _VsIdListState extends State<VsIdList> {
     setState(() {});
   }
 
+  void prevDoc() {
+    setState(() {
+      currVsId--;
+    });
+    fetchFileFromUrl();
+  }
+
+  void nextDoc() {
+    setState(() {
+      currVsId++;
+    });
+    fetchFileFromUrl();
+  }
+
   @override
   Widget build(BuildContext context) {
     var mSize = MediaQuery.of(context).size;
@@ -72,6 +86,14 @@ class _VsIdListState extends State<VsIdList> {
       body: SafeArea(
         child: received
             ? Container(
+                // height: mHeight,
+                // width: mWidth,
+                // decoration: BoxDecoration(
+                //   border: Border.all(
+                //     color: Colors.black,
+                //     width: 1,
+                //   ),
+                // ),
                 child: Column(
                   children: [
                     Container(
@@ -95,14 +117,7 @@ class _VsIdListState extends State<VsIdList> {
                               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 IconButton(
-                                  onPressed: currVsId > 0
-                                      ? () {
-                                          setState(() {
-                                            currVsId--;
-                                          });
-                                          fetchFileFromUrl();
-                                        }
-                                      : null,
+                                  onPressed: currVsId > 0 ? prevDoc : null,
                                   icon: Icon(
                                     Icons.arrow_back_ios,
                                     color: currVsId > 0
@@ -121,12 +136,7 @@ class _VsIdListState extends State<VsIdList> {
                                 IconButton(
                                   onPressed: currVsId + 1 == vsids.length
                                       ? null
-                                      : () {
-                                          setState(() {
-                                            currVsId++;
-                                          });
-                                          fetchFileFromUrl();
-                                        },
+                                      : nextDoc,
                                   icon: Icon(
                                     Icons.arrow_forward_ios,
                                     color: currVsId + 1 == vsids.length
@@ -142,61 +152,77 @@ class _VsIdListState extends State<VsIdList> {
                     ),
                     Container(
                       height: mHeight * 0.9,
-                      padding: const EdgeInsets.all(20),
+                      width: double.infinity,
+                      // decoration: BoxDecoration(
+                      //   border: Border.all(
+                      //     color: Colors.black,
+                      //     width: 1,
+                      //   ),
+                      // ),
+                      // padding: const EdgeInsets.all(10),
                       child: Center(
                         child: url != ''
-                            ? Stack(
+                            ? Row(
+                                // mainAxisAlignment:
+                                //     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const PDF(
-                                    autoSpacing: true,
-                                    fitEachPage: true,
-                                  ).fromUrl(
-                                    url,
-                                  ),
                                   Container(
-                                    width: gestureWidth,
-                                    // color: Colors.yellow,
-                                    child: GestureDetector(
-                                      // onTap: () {
-                                      //   print('object');
-                                      // },
-                                      onHorizontalDragUpdate: (details) {
-                                        // print('Horizontal detected');
-                                        int sensitivity = 5;
-                                        if (details.delta.dx > sensitivity) {
-                                          // print('swiped to left');
-                                          if (currVsId > 0) {
-                                            setState(() {
-                                              currVsId--;
-                                            });
-                                            fetchFileFromUrl();
-                                          }
-                                        }
-                                      },
+                                    // height: double.infinity,
+                                    width: mWidth * 0.05,
+                                    // decoration: BoxDecoration(
+                                    //   border: Border.all(
+                                    //     color: Colors.black,
+                                    //     width: 1,
+                                    //   ),
+                                    // ),
+                                    child: FittedBox(
+                                      child: IconButton(
+                                        onPressed:
+                                            currVsId > 0 ? prevDoc : null,
+                                        icon: Icon(
+                                          Icons.arrow_back_ios,
+                                          color: currVsId > 0
+                                              ? Theme.of(context).primaryColor
+                                              : null,
+                                          size: 50,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                  Align(
-                                    alignment: const Alignment(1, 0),
-                                    child: Container(
-                                      width: gestureWidth,
-                                      // color: Colors.purple,
-                                      child: GestureDetector(
-                                        // onTap: () {
-                                        //   print('object2');
-                                        // },
-                                        onHorizontalDragUpdate: (details) {
-                                          // print('Horizontal detected');
-                                          int sensitivity = 5;
-                                          if (details.delta.dx < -sensitivity) {
-                                            // print('swiped to right');
-                                            if (currVsId + 1 != vsids.length) {
-                                              setState(() {
-                                                currVsId++;
-                                              });
-                                              fetchFileFromUrl();
-                                            }
-                                          }
-                                        },
+                                  Container(
+                                    width: mWidth * 0.9,
+                                    padding: const EdgeInsets.all(15),
+                                    child: const PDF(
+                                      autoSpacing: true,
+                                      fitEachPage: true,
+                                    ).fromUrl(
+                                      url,
+                                    ),
+                                  ),
+                                  Container(
+                                    width: mWidth * 0.05,
+                                    height: mHeight * 0.5,
+                                    // decoration: BoxDecoration(
+                                    //   border: Border.all(
+                                    //     color: Colors.red,
+                                    //     width: 1,
+                                    //   ),
+                                    // ),
+                                    // child: Text('/'),
+                                    child: FittedBox(
+                                      child: IconButton(
+                                        onPressed:
+                                            currVsId + 1 == vsids.length
+                                                ? null
+                                                : nextDoc,
+                                        icon: Icon(
+                                          Icons.arrow_forward_ios,
+                                          size: 50,
+                                          color: currVsId + 1 == vsids.length
+                                              ? null
+                                              : Theme.of(context)
+                                                  .primaryColor,
+                                        ),
                                       ),
                                     ),
                                   ),

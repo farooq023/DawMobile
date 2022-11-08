@@ -15,6 +15,13 @@
     "nom":"No mails!",
     "toi":"Table of icons that are used in the Application",
     "arch":"Archived",
+    "search":"Search",
+    
+    "searchFilter":"Search Filter",
+    "reqNo":"Requisition No.",
+    "subject":"Subject",
+    "clear":"Clear",
+
     
     "dashboard":"Dashboard",
     "inbox":"Inbox",

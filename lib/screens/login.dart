@@ -19,7 +19,7 @@ class _LoginState extends State<Login> {
 
   String name = '', pass = '';
   final _focusU = FocusNode(), _focusP = FocusNode();
-  int spin = 0, fill = 0, inv = 0, err = 0, net = 0;
+  int spin = 0, fill = 0, inv = 0, err = 0;
 
   // final List<String> _ers = [
   //   'Fill all fields!',
@@ -93,7 +93,7 @@ class _LoginState extends State<Login> {
       inv = 0;
       fill = 0;
       err = 0;
-      net = 0;
+      // net = 0;
       spin = 0;
     });
   }
@@ -211,14 +211,14 @@ class _LoginState extends State<Login> {
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    // 'Username',
-                                    AppLocalizations.of(context)!.username,
-                                    style: TextStyle(
-                                      fontSize: 21,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ),
+                                  // Text(
+                                  //   // 'Username',
+                                  //   AppLocalizations.of(context)!.username,
+                                  //   style: TextStyle(
+                                  //     fontSize: 21,
+                                  //     color: Theme.of(context).primaryColor,
+                                  //   ),
+                                  // ),
                                   TextField(
                                     enabled: spin == 1 ? false : true,
                                     onSubmitted: _nextText,
@@ -228,6 +228,8 @@ class _LoginState extends State<Login> {
                                     cursorColor: Theme.of(context).primaryColor,
                                     onChanged: (val) => {name = val},
                                     decoration: InputDecoration(
+                                      hintText: AppLocalizations.of(context)!.username,
+                                      // hintText: 'sdsd',
                                       border: UnderlineInputBorder(),
                                       focusedBorder: UnderlineInputBorder(
                                         borderSide: BorderSide(
@@ -238,19 +240,19 @@ class _LoginState extends State<Login> {
                                       // hintText: 'Enter Your Name',
                                     ),
                                   ),
+                                  // Container(
+                                  //   margin: const EdgeInsets.only(top: 20),
+                                  //   child: Text(
+                                  //     // 'Password',
+                                  //     AppLocalizations.of(context)!.password,
+                                  //     style: TextStyle(
+                                  //       fontSize: 21,
+                                  //       color: Theme.of(context).primaryColor,
+                                  //     ),
+                                  //   ),
+                                  // ),
                                   Container(
-                                    margin: const EdgeInsets.only(top: 20),
-                                    child: Text(
-                                      // 'Password',
-                                      AppLocalizations.of(context)!.password,
-                                      style: TextStyle(
-                                        fontSize: 21,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(bottom: 10),
+                                    margin: const EdgeInsets.symmetric(vertical: 30),
                                     child: TextField(
                                       enabled: spin == 1 ? false : true,
                                       onSubmitted: (_) {
@@ -265,6 +267,8 @@ class _LoginState extends State<Login> {
                                       obscureText: true,
                                       onChanged: (val) => {pass = val},
                                       decoration: InputDecoration(
+                                        // labelText: AppLocalizations.of(context)!.password,
+                                        hintText: AppLocalizations.of(context)!.password,
                                         // fillColor: Theme.of(context).primaryColor,
                                         border: const UnderlineInputBorder(),
                                         focusedBorder: UnderlineInputBorder(
@@ -292,10 +296,7 @@ class _LoginState extends State<Login> {
                                   //         ),
                                   // ),
 
-                                  if (fill == 0 &&
-                                      inv == 0 &&
-                                      err == 0 &&
-                                      net == 0)
+                                  if (fill == 0 && inv == 0 && err == 0)
                                     Container(
                                       child: const Text(
                                         "",
@@ -339,16 +340,16 @@ class _LoginState extends State<Login> {
                                       ),
                                     ),
 
-                                  if (net == 1)
-                                    Container(
-                                      child: Text(
-                                        'not connected',
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                    ),
+                                  // if (net == 1)
+                                  //   Container(
+                                  //     child: Text(
+                                  //       'not connected',
+                                  //       style: const TextStyle(
+                                  //         fontSize: 18,
+                                  //         color: Colors.red,
+                                  //       ),
+                                  //     ),
+                                  //   ),
 
                                   Container(
                                     height: mHeight * 0.08,

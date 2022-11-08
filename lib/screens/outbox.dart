@@ -18,10 +18,11 @@ class Outbox extends StatefulWidget {
 }
 
 class _OutboxState extends State<Outbox> {
-  
   List<Map> rcvdOutbox = [];
+  List<Map> setOutbox = [];
   bool received = false;
   int selection = 0;
+  String searchText = '';
 
   @override
   void initState() {
@@ -31,12 +32,25 @@ class _OutboxState extends State<Outbox> {
   void callProviders() async {
     rcvdOutbox =
         await Provider.of<OutboxPro>(context, listen: false).getFullOutbox();
+    setOutbox = rcvdOutbox;
     received = true;
 
     // if (mounted) {
     //   setState(() {});
     // }
 
+    setState(() {});
+  }
+
+  void searchMail() {
+    setOutbox = [];
+    for (int i = 0; i < rcvdOutbox.length; i++) {
+      if (rcvdOutbox[i]["searchString"]
+          .toLowerCase()
+          .contains(searchText)) {
+        setOutbox.add(rcvdOutbox[i]);
+      }
+    }
     setState(() {});
   }
 
@@ -97,319 +111,350 @@ class _OutboxState extends State<Outbox> {
       ),
     ];
 
-
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         title: Text(AppLocalizations.of(context)!.sent),
         actions: selection != 0
-              ? [
-                  TextButton(
-                    onPressed: setSelection,
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(
-                        color: Colors.white,
-                        // fontSize: 10,
-                      ),
+            ? [
+                TextButton(
+                  onPressed: setSelection,
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: Colors.white,
+                      // fontSize: 10,
                     ),
                   ),
-                ]
-              : [
-                  const ChangeLang(),
-                ],
+                ),
+              ]
+            : [
+                const ChangeLang(),
+              ],
       ),
       drawer: const MainDrawer(),
       body: SafeArea(
         child: received
-            ? rcvdOutbox.length > 0
-                ? (selection == 0
-                    ? (ListView.builder(
-                        itemCount: rcvdOutbox.length,
-                        itemBuilder: (BuildContext ctxt, int i) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => VsIdList(
-                                    rcvdOutbox[i]['SUBJECT'],
-                                    rcvdOutbox[i]['DETID'],
-                                  ),
-                                ),
-                              );
-                            },
-                            onLongPress: () {
-                              selection = 1;
-                              setState(() {});
-                            },
-                            child: Container(
-                              height: mHeight * 0.17,
-                              padding: const EdgeInsets.all(6),
-                              // color: ,
-                              child: Row(
-                                children: [
-                                  Container(
-                                    // decoration: BoxDecoration(
-                                    //   border: Border.all(
-                                    //     color: Colors.black,
-                                    //     width: 2,
-                                    //   ),
-                                    // ),
-                                    width: mWidth * 0.138,
-                                    child: Column(
-                                      children: [
-                                        const Align(
-                                          alignment: Alignment(0, -1),
-                                          child: Icon(
-                                            Icons.account_circle,
-                                            size: 48,
+            ? (selection == 0
+                ? Column(
+                    children: [
+                      Container(
+                        // height: mHeight * 0.08,
+                        padding: const EdgeInsets.all(10),
+                        child: TextField(
+                          // style: TextStyle(fontSize: 10.0, height: 2.0, color: Colors.black),
+                          onChanged: (val) {
+                            searchText = val.toLowerCase();
+                            searchMail();
+                          },
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: AppLocalizations.of(context)!.search,
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                          ),
+                          textInputAction: TextInputAction.search,
+                          // style: TextStyle(
+                          //   height: 1,
+                          // ),
+                          // maxLines: 3,
+                          // minLines: 2
+                        ),
+                      ),
+                      Expanded(
+                        child: setOutbox.length > 0
+                            ? ListView.builder(
+                                itemCount: setOutbox.length,
+                                itemBuilder: (BuildContext ctxt, int i) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => VsIdList(
+                                            setOutbox[i]['SUBJECT'],
+                                            setOutbox[i]['DETID'],
                                           ),
                                         ),
-                                        Align(
-                                          alignment: Alignment.center,
-                                          child: iconsList[
-                                              rcvdOutbox[i]['StatusID'] - 1],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    // decoration: BoxDecoration(
-                                    //   border: Border.all(
-                                    //     color: Colors.black,
-                                    //     width: 2,
-                                    //   ),
-                                    // ),
-                                    // width: mWidth * 0.782,
-                                    width: mWidth * 0.81,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                              width: mWidth * 0.45,
-                                              child: Text(
-                                                "${rcvdOutbox[i]['Recipient']}",
-                                                style: const TextStyle(
-                                                  fontSize: 22,
-                                                  fontWeight: FontWeight.bold,
-                                                  // color: Colors.blue,
-                                                ),
-                                                maxLines: 1,
-                                              ),
-                                            ),
-                                            Container(
-                                              width: mWidth * 0.25,
-                                              child: Align(
-                                                alignment:
-                                                    const Alignment(1, 0),
-                                                child: Text(
-                                                  "${rcvdOutbox[i]['WFBeginDate']}",
-                                                  style: const TextStyle(
-                                                    fontSize: 15,
-                                                    // fontWeight: FontWeight.bold,
-                                                    // color: Colors.blue,
+                                      );
+                                    },
+                                    // onLongPress: () {
+                                    //   selection = 1;
+                                    //   setState(() {});
+                                    // },
+                                    child: Container(
+                                      height: mHeight * 0.17,
+                                      padding: const EdgeInsets.all(6),
+                                      // color: ,
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            // decoration: BoxDecoration(
+                                            //   border: Border.all(
+                                            //     color: Colors.black,
+                                            //     width: 2,
+                                            //   ),
+                                            // ),
+                                            width: mWidth * 0.138,
+                                            child: Column(
+                                              children: [
+                                                const Align(
+                                                  alignment: Alignment(0, -1),
+                                                  child: Icon(
+                                                    Icons.account_circle,
+                                                    size: 48,
                                                   ),
-                                                  maxLines: 1,
                                                 ),
-                                              ),
+                                                Align(
+                                                  alignment: Alignment.center,
+                                                  child: iconsList[setOutbox[i]
+                                                          ['StatusID'] -
+                                                      1],
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                        Container(
-                                          width: mWidth * 0.45,
-                                          child: Text(
-                                            "${rcvdOutbox[i]['SUBJECT']}",
-                                            style: const TextStyle(
-                                              fontSize: 18,
-                                              // color: Colors.blue,
-                                            ),
-                                            maxLines: 1,
                                           ),
-                                        ),
-                                        Container(
-                                          width: mWidth * 0.85,
-                                          child: Text(
-                                            "${rcvdOutbox[i]['RequisitionNo']}",
-                                            style: const TextStyle(
-                                              fontSize: 15,
-                                              // color: Colors.blue,
+                                          Container(
+                                            // decoration: BoxDecoration(
+                                            //   border: Border.all(
+                                            //     color: Colors.black,
+                                            //     width: 2,
+                                            //   ),
+                                            // ),
+                                            // width: mWidth * 0.782,
+                                            width: mWidth * 0.81,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Container(
+                                                      width: mWidth * 0.45,
+                                                      child: Text(
+                                                        "${setOutbox[i]['Recipient']}",
+                                                        style: const TextStyle(
+                                                          fontSize: 22,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          // color: Colors.blue,
+                                                        ),
+                                                        maxLines: 1,
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      width: mWidth * 0.25,
+                                                      child: Align(
+                                                        alignment:
+                                                            const Alignment(
+                                                                1, 0),
+                                                        child: Text(
+                                                          "${setOutbox[i]['WFBeginDate']}",
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 15,
+                                                            // fontWeight: FontWeight.bold,
+                                                            // color: Colors.blue,
+                                                          ),
+                                                          maxLines: 1,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Container(
+                                                  width: mWidth * 0.45,
+                                                  child: Text(
+                                                    "${setOutbox[i]['SUBJECT']}",
+                                                    style: const TextStyle(
+                                                      fontSize: 18,
+                                                      // color: Colors.blue,
+                                                    ),
+                                                    maxLines: 1,
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: mWidth * 0.85,
+                                                  child: Text(
+                                                    "${setOutbox[i]['RequisitionNo']}",
+                                                    style: const TextStyle(
+                                                      fontSize: 15,
+                                                      // color: Colors.blue,
+                                                    ),
+                                                    maxLines: 1,
+                                                  ),
+                                                ),
+                                                // const Divider(thickness: 1),
+                                              ],
                                             ),
-                                            maxLines: 1,
                                           ),
-                                        ),
-                                        // const Divider(thickness: 1),
-                                      ],
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.inbox,
+                                    size: 28,
+                                  ),
+                                  Text(
+                                    AppLocalizations.of(context)!.nom,
+                                    style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context).primaryColor,
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                          );
-                        },
-                      ))
-                    :
+                      ),
+                    ],
+                  )
+                :
 
-                    // ********* Selection container below *********
+                // ********* Selection container below *********
 
-                    ListView.builder(
-                        itemCount: rcvdOutbox.length,
-                        itemBuilder: (BuildContext ctxt, int i) {
-                          return CheckboxListTile(
-                            title: Container(
-                              height: mHeight * 0.17,
-                              // padding: const EdgeInsets.all(6),
-                              // color: ,
-                              child: Container(
-                                // decoration: BoxDecoration(
-                                //   border: Border.all(
-                                //     color: Colors.black,
-                                //     width: 2,
-                                //   ),
-                                // ),
-                                // width: mWidth * 0.782,
-                                width: mWidth * 0.81,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                ListView.builder(
+                    itemCount: setOutbox.length,
+                    itemBuilder: (BuildContext ctxt, int i) {
+                      return CheckboxListTile(
+                        title: Container(
+                          height: mHeight * 0.17,
+                          // padding: const EdgeInsets.all(6),
+                          // color: ,
+                          child: Container(
+                            // decoration: BoxDecoration(
+                            //   border: Border.all(
+                            //     color: Colors.black,
+                            //     width: 2,
+                            //   ),
+                            // ),
+                            // width: mWidth * 0.782,
+                            width: mWidth * 0.81,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          width: mWidth * 0.45,
-                                          child: Text(
-                                            "${rcvdOutbox[i]['Recipient']}",
-                                            style: const TextStyle(
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.bold,
-                                              // color: Colors.blue,
-                                            ),
-                                            maxLines: 1,
-                                          ),
-                                        ),
-                                        Container(
-                                          width: mWidth * 0.25,
-                                          child: Align(
-                                            alignment: const Alignment(1, 0),
-                                            child: Text(
-                                              "${rcvdOutbox[i]['WFBeginDate']}",
-                                              style: const TextStyle(
-                                                fontSize: 15,
-                                                // fontWeight: FontWeight.bold,
-                                                // color: Colors.blue,
-                                              ),
-                                              maxLines: 1,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
                                     Container(
                                       width: mWidth * 0.45,
                                       child: Text(
-                                        "${rcvdOutbox[i]['SUBJECT']}",
+                                        "${setOutbox[i]['Recipient']}",
                                         style: const TextStyle(
-                                          fontSize: 18,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
                                           // color: Colors.blue,
                                         ),
                                         maxLines: 1,
                                       ),
                                     ),
                                     Container(
-                                      width: mWidth * 0.85,
-                                      child: Text(
-                                        "${rcvdOutbox[i]['RequisitionNo']}",
-                                        style: const TextStyle(
-                                          fontSize: 15,
-                                          // color: Colors.blue,
+                                      width: mWidth * 0.25,
+                                      child: Align(
+                                        alignment: const Alignment(1, 0),
+                                        child: Text(
+                                          "${setOutbox[i]['WFBeginDate']}",
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                            // fontWeight: FontWeight.bold,
+                                            // color: Colors.blue,
+                                          ),
+                                          maxLines: 1,
                                         ),
-                                        maxLines: 1,
                                       ),
                                     ),
-                                    // const Divider(thickness: 1),
                                   ],
                                 ),
-                              ),
+                                Container(
+                                  width: mWidth * 0.45,
+                                  child: Text(
+                                    "${setOutbox[i]['SUBJECT']}",
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      // color: Colors.blue,
+                                    ),
+                                    maxLines: 1,
+                                  ),
+                                ),
+                                Container(
+                                  width: mWidth * 0.85,
+                                  child: Text(
+                                    "${setOutbox[i]['RequisitionNo']}",
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      // color: Colors.blue,
+                                    ),
+                                    maxLines: 1,
+                                  ),
+                                ),
+                                // const Divider(thickness: 1),
+                              ],
                             ),
-                            // 3.
-                            value: rcvdOutbox[i]['isChecked'],
-                            // 4.
-                            onChanged: (bool? value) {
-                              // setState(
-                              //   () {
-                              //     rcvdOutbox[i]['isChecked'] = value!;
-                              //     if (selectedDetIds
-                              //         .contains(rcvdOutbox[i]['DETID'])) {
-                              //       selectedDetIds
-                              //           .remove(rcvdOutbox[i]['DETID']);
-                              //       if (rcvdOutbox[i]['_falseForwards'] ==
-                              //           false) {
-                              //         _falseForwards--;
-                              //       }
-                              //       if (rcvdOutbox[i]['_falseNewWF'] == false) {
-                              //         _falseNewWF--;
-                              //       }
-                              //       if (rcvdOutbox[i]['_falseCompletes'] ==
-                              //           false) {
-                              //         _falseCompletes--;
-                              //       }
-                              //       if (rcvdOutbox[i]['_falseNotes'] == false) {
-                              //         _falseNotes--;
-                              //       }
-                              //     } else {
-                              //       selectedDetIds.add(rcvdOutbox[i]['DETID']);
-                              //       if (rcvdOutbox[i]['_falseForwards'] ==
-                              //           false) {
-                              //         _falseForwards++;
-                              //       }
-                              //       if (rcvdOutbox[i]['_falseNewWF'] == false) {
-                              //         _falseNewWF++;
-                              //       }
-                              //       if (rcvdOutbox[i]['_falseCompletes'] ==
-                              //           false) {
-                              //         _falseCompletes++;
-                              //       }
-                              //       if (rcvdOutbox[i]['_falseNotes'] == false) {
-                              //         _falseNotes++;
-                              //       }
-                              //     }
-                              //   },
-                              // );
-                            },
-                            controlAffinity: ListTileControlAffinity.leading,
-                            checkboxShape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          );
-                        },
-                      ))
-                : Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.inbox,
-                          size: 28,
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.nom,
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
                           ),
                         ),
-                      ],
-                    ),
-                  )
+                        // 3.
+                        value: setOutbox[i]['isChecked'],
+                        // 4.
+                        onChanged: (bool? value) {
+                          // setState(
+                          //   () {
+                          //     setOutbox[i]['isChecked'] = value!;
+                          //     if (selectedDetIds
+                          //         .contains(setOutbox[i]['DETID'])) {
+                          //       selectedDetIds
+                          //           .remove(setOutbox[i]['DETID']);
+                          //       if (setOutbox[i]['_falseForwards'] ==
+                          //           false) {
+                          //         _falseForwards--;
+                          //       }
+                          //       if (setOutbox[i]['_falseNewWF'] == false) {
+                          //         _falseNewWF--;
+                          //       }
+                          //       if (setOutbox[i]['_falseCompletes'] ==
+                          //           false) {
+                          //         _falseCompletes--;
+                          //       }
+                          //       if (setOutbox[i]['_falseNotes'] == false) {
+                          //         _falseNotes--;
+                          //       }
+                          //     } else {
+                          //       selectedDetIds.add(setOutbox[i]['DETID']);
+                          //       if (setOutbox[i]['_falseForwards'] ==
+                          //           false) {
+                          //         _falseForwards++;
+                          //       }
+                          //       if (setOutbox[i]['_falseNewWF'] == false) {
+                          //         _falseNewWF++;
+                          //       }
+                          //       if (setOutbox[i]['_falseCompletes'] ==
+                          //           false) {
+                          //         _falseCompletes++;
+                          //       }
+                          //       if (setOutbox[i]['_falseNotes'] == false) {
+                          //         _falseNotes++;
+                          //       }
+                          //     }
+                          //   },
+                          // );
+                        },
+                        controlAffinity: ListTileControlAffinity.leading,
+                        checkboxShape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      );
+                    },
+                  ))
             : Center(
                 child: CircularProgressIndicator(
                   color: Theme.of(context).primaryColor,

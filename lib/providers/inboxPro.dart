@@ -3,12 +3,15 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import './languageProvider.dart';
 import './ipProvider.dart';
+import 'inboxFilterPro.dart';
 
 class InboxPro with ChangeNotifier {
   String accessToken;
   int uID;
+  // bool filter;
 
   InboxPro(this.accessToken, this.uID);
+  // InboxPro(this.accessToken, this.uID, this.filter);
 
   var ibx;
   bool rcvd = false;
@@ -49,16 +52,76 @@ class InboxPro with ChangeNotifier {
   }
 
   Future<List<Map>> getFullInbox() async {
-    String url = '${IpProvider.ip}api/WFInbox/GetWfinbox';
-    var response = await http.post(
-      Uri.parse(url),
-      headers: {
-        'Authorization': 'Bearer $accessToken',
-      },
-      body: {
-        'UserID': '$uID',
-      },
-    );
+    String url;
+    var response;
+
+    if (InFilterProvider.filter) {
+      url = '${IpProvider.ip}api/WFInbox/GetWfinbox';
+      response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+        },
+        body: {
+          'UserID': '$uID',
+          'RequisitionNo': InFilterProvider.reqNo,
+          'Subject': InFilterProvider.subject,
+          'IDateFrom': InFilterProvider.startDate,
+          'IDateTo': InFilterProvider.endDate
+        },
+      );
+      // if (InFilterProvider.reqNo != '' && InFilterProvider.subject == '') {
+      //   url = '${IpProvider.ip}api/WFInbox/GetWfinbox';
+      //   response = await http.post(
+      //     Uri.parse(url),
+      //     headers: {
+      //       'Authorization': 'Bearer $accessToken',
+      //     },
+      //     body: {
+      //       'UserID': '$uID',
+      //       'RequisitionNo': InFilterProvider.reqNo,
+      //     },
+      //   );
+      // }
+      // else if (InFilterProvider.reqNo == '' && InFilterProvider.subject != '') {
+      //   url = '${IpProvider.ip}api/WFInbox/GetWfinbox';
+      //   response = await http.post(
+      //     Uri.parse(url),
+      //     headers: {
+      //       'Authorization': 'Bearer $accessToken',
+      //     },
+      //     body: {
+      //       'UserID': '$uID',
+      //       'Subject': InFilterProvider.subject,
+      //     },
+      //   );
+      // }
+      // else{
+      //   url = '${IpProvider.ip}api/WFInbox/GetWfinbox';
+      //   response = await http.post(
+      //     Uri.parse(url),
+      //     headers: {
+      //       'Authorization': 'Bearer $accessToken',
+      //     },
+      //     body: {
+      //       'UserID': '$uID',
+      //       'RequisitionNo': InFilterProvider.reqNo,
+      //       'Subject': InFilterProvider.subject,
+      //     },
+      //   );
+      // }
+    } else {
+      url = '${IpProvider.ip}api/WFInbox/GetWfinbox';
+      response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+        },
+        body: {
+          'UserID': '$uID',
+        },
+      );
+    }
 
     var res = await json.decode(response.body);
     ibx = res['Result']['Data'];
@@ -74,7 +137,14 @@ class InboxPro with ChangeNotifier {
       } else {
         beginDate = comparer[0];
       }
-      if (LanguageProvider.appLocale == Locale('ar')) {
+      if (LanguageProvider.appLocale == const Locale('ar')) {
+        String searchString = ibx[i]['Sender'] == null ? '' : ibx[i]['Sender'];
+        if (ibx[i]['SUBJECT'] != null) {
+          searchString += ' ' + ibx[i]['SUBJECT'];
+        }
+        if (ibx[i]['RequisitionNo'] != null) {
+          searchString += ' ' + ibx[i]['RequisitionNo'];
+        }
         setInbox.add(
           {
             "Sender": ibx[i]['Sender'],
@@ -91,9 +161,20 @@ class InboxPro with ChangeNotifier {
             "EnableStartNewWF": ibx[i]['EnableStartNewWF'],
             "EnableCompleteTask": ibx[i]['EnableCompleteTask'],
             "EnableAddNotes": ibx[i]['EnableAddNotes'],
+            //
+            "searchString": searchString
           },
         );
       } else {
+        String searchString =
+            ibx[i]['SenderEn'] == null ? '' : ibx[i]['SenderEn'];
+        if (ibx[i]['SUBJECT'] != null) {
+          searchString += ' ' + ibx[i]['SUBJECT'];
+        }
+        if (ibx[i]['RequisitionNo'] != null) {
+          searchString += ' ' + ibx[i]['RequisitionNo'];
+        }
+
         setInbox.add(
           {
             "Sender": ibx[i]['SenderEn'],
@@ -110,10 +191,15 @@ class InboxPro with ChangeNotifier {
             "EnableStartNewWF": ibx[i]['EnableStartNewWF'],
             "EnableCompleteTask": ibx[i]['EnableCompleteTask'],
             "EnableAddNotes": ibx[i]['EnableAddNotes'],
+            //
+            "searchString": searchString
           },
         );
       }
     }
+
+    // print(setInbox[0]['searchString']);
+    // print(setInbox[1]['searchString']);
 
     return setInbox;
   }

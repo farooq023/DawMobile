@@ -15,6 +15,7 @@ import './screens/iconsInfo.dart';
 import './providers/auth.dart';
 import './providers/dashboardPro.dart';
 import './providers/inboxPro.dart';
+import 'providers/inboxFilterPro.dart';
 import './providers/outboxPro.dart';
 import './providers/archivedPro.dart';
 import './providers/fileProvider.dart';
@@ -51,10 +52,22 @@ class _MyAppState extends State<MyApp> {
           update: (_, auth, data) =>
               DashboardPro(auth.accessToken, auth.userID),
         ),
+        ChangeNotifierProvider.value(
+          value: InFilterProvider(),
+        ),
         ChangeNotifierProxyProvider<Auth, InboxPro>(
           create: (ctx) => InboxPro('', 0),
           update: (_, auth, data) => InboxPro(auth.accessToken, auth.userID),
         ),
+        
+        // ChangeNotifierProxyProvider2<Auth, InFilterProvider, InboxPro>(
+        //   create: (ctx) => InboxPro('', 0, false),
+        //   update: (_, auth, filt, data) => InboxPro(auth.accessToken, auth.userID, InFilterProvider.filter),
+        // ),
+
+        // ChangeNotifierProvider.value(
+        //   value: InFilterProvider(),
+        // ),
         ChangeNotifierProxyProvider<Auth, OutboxPro>(
           create: (ctx) => OutboxPro('', 0),
           update: (_, auth, data) => OutboxPro(auth.accessToken, auth.userID),

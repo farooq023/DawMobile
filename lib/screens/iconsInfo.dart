@@ -120,6 +120,7 @@ class IconInfo extends StatelessWidget {
                 child: Center(
                   child: Text(
                     AppLocalizations.of(context)!.toi,
+                    // maxLines: 1,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
