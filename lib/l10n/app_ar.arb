@@ -22,6 +22,11 @@
     "subject":"موضوعات",
     "clear":"صافي",
 
+    "internalMemo":"مذكرة داخلية",
+    "priority":"أولوية",
+    "action":"عمل",
+    "endingDate":"انتهاء الدورة",
+
     "dashboard":"لوحة القيادة",
     "inbox":"صندوق الوارد",
     "iconinfo":"معلومات الرمز",

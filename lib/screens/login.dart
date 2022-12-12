@@ -206,9 +206,10 @@ class _LoginState extends State<Login> {
                           ),
                           Container(
                             padding: const EdgeInsets.all(20),
+                            margin: const EdgeInsets.only(top: 30),
                             child: Container(
                               child: Column(
-                                mainAxisSize: MainAxisSize.min,
+                                // mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   // Text(
@@ -228,7 +229,7 @@ class _LoginState extends State<Login> {
                                     cursorColor: Theme.of(context).primaryColor,
                                     onChanged: (val) => {name = val},
                                     decoration: InputDecoration(
-                                      hintText: AppLocalizations.of(context)!.username,
+                                      labelText: AppLocalizations.of(context)!.username,
                                       // hintText: 'sdsd',
                                       border: UnderlineInputBorder(),
                                       focusedBorder: UnderlineInputBorder(
@@ -268,7 +269,7 @@ class _LoginState extends State<Login> {
                                       onChanged: (val) => {pass = val},
                                       decoration: InputDecoration(
                                         // labelText: AppLocalizations.of(context)!.password,
-                                        hintText: AppLocalizations.of(context)!.password,
+                                        labelText: AppLocalizations.of(context)!.password,
                                         // fillColor: Theme.of(context).primaryColor,
                                         border: const UnderlineInputBorder(),
                                         focusedBorder: UnderlineInputBorder(

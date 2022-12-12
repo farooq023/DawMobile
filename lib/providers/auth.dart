@@ -7,20 +7,20 @@ import './inboxFilterPro.dart';
 // import 'dart:io';
 
 class Auth with ChangeNotifier {
-  String accessToken = '';
-  String userName = '';
+  // String accessToken = '';
+  // String userName = '';
 
-  int userID = 0;
-  String name = '';
-  String jobTitle = '';
+  // int userID = 0;
+  // String name = '';
+  // String jobTitle = '';
 
   // *********
 
-  // String accessToken = 'EyW1xX1mhXEO9hps6zXyi-UIbmhMw_JSMasIN6MuZykz2RZ0jx0c-u5p91cwcsTh6BicX24m4-GooxBgCJUtCwuRXSwr0C8OT2u7_nmGeWGHCXyJglJCLfu8V6KS8u6w9qMomfVrdcr3AoAYoOX-b776ZJGgWzEuiCZbZYNFmC3fd5uaTLgqwVCi-OYSZjVHHvrtaqi50chPwcZEXXXIhMAoRzoI9xu9OOOQusEHFNTXC8BOH2GaLt8IxybM6Uvz66Ft2x8Wmg_2FINtGGJ_Fw';
-  // String userName = 'dawqa_1';
-  // int userID = 2;
-  // String name = 'الامين المساعد للمالية والادارية';
-  // String jobTitle = 'English';
+  String accessToken = 'hejC6dXee0o4eh3BiLhWu31iJrIStcWFIb5o0BeP3_qSFVaS72B1HyuIjLRFHoF-BP8gpoUWvzMILrKBpDOR2QxNLERWs81Ie2V8EYjJxkcXXvQCGUIO2YEIcKAhmN0C5fgs_5W-r0ZiT2cnLAyRIchaY9eNR0NPLldz8AfQp5juy0x-fXY_RwxOnr7LhCBAEXfuAPJeMoKT_Zn9nHXJFXeq4_ycuwUsPEIzS_7CJ1N0CJgYuMm_bUymPOeDVpzNBYS9dqAbdil2Vqcwfk4bgg';
+  String userName = 'dawqa_3';
+  int userID = 4;
+  String name = 'الامين المساعد للمالية والادارية';
+  String jobTitle = 'English';
 
   bool get isAuth {
     return accessToken == '';

@@ -13,6 +13,7 @@ import './vsidList.dart';
 import '../widgets/main_drawer.dart';
 import '../widgets/changeLangButton.dart';
 import '../widgets/searchFilterIn.dart';
+import '../widgets/launchInDoc.dart';
 
 // import '../widgets/inboxTile.dart';
 
@@ -34,11 +35,13 @@ class _InboxState extends State<Inbox> {
   String searchText = '';
   var focusS = FocusNode();
 
+  final GlobalKey btnKey = GlobalKey();
+  // double bx = 0 , by = 0 ;
+
   int _falseForwards = 0, _falseNewWF = 0, _falseCompletes = 0, _falseNotes = 0;
 
   @override
   void initState() {
-    // print('popped');
     callProviders();
   }
 
@@ -51,6 +54,17 @@ class _InboxState extends State<Inbox> {
     if (mounted) {
       setState(() {});
     }
+
+    // RenderBox box = btnKey.currentContext!.findRenderObject() as RenderBox;
+    // Offset position = box.localToGlobal(Offset.zero);
+
+    // print(position.dx);
+    // print(position.dy);
+
+    // setState(() {
+    //   bx = position.dx;
+    //   by = position.dy;
+    // });
   }
 
   void searchMail() {
@@ -120,8 +134,31 @@ class _InboxState extends State<Inbox> {
       ),
     ];
 
-    void modal() {
-      showModalBottomSheet( // showDialog // showModalBottomSheet // showGeneralDialog
+    void LaunchInModal() {
+      showModalBottomSheet(
+        // showDialog // showModalBottomSheet // showGeneralDialog
+        isScrollControlled: true,
+        context: context,
+        builder: (_) {
+          return LaunchInDoc();
+        },
+      );
+    }
+
+    // void modal() {
+    //   showModalBottomSheet(
+    //     // showDialog // showModalBottomSheet // showGeneralDialog
+    //     isScrollControlled: true,
+    //     context: context,
+    //     builder: (_) {
+    //       return LaunchInDoc();
+    //     },
+    //   );
+    // }
+
+    void searchModal() {
+      showModalBottomSheet(
+        // showDialog // showModalBottomSheet // showGeneralDialog
         isScrollControlled: true,
         context: context,
         builder: (_) {
@@ -152,7 +189,7 @@ class _InboxState extends State<Inbox> {
                   IconButton(
                     color: Colors.white,
                     onPressed: () {
-                      modal();
+                      searchModal();
                     },
                     icon: const Icon(Icons.tune),
                   ),
@@ -160,6 +197,84 @@ class _InboxState extends State<Inbox> {
                 ],
         ),
         drawer: const MainDrawer(),
+        // floatingActionButton: FloatingActionButton(
+        //   backgroundColor: Theme.of(context).primaryColor,
+        //   onPressed: () {
+        //     LaunchInModal();
+        //   },
+        //   child: const Icon(Icons.add),
+        // ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Theme.of(context).primaryColor,
+          // mini: false,
+          onPressed: () {
+            // LaunchInModal();
+            dynamic state = btnKey.currentState;
+            state.showButtonMenu();
+          },
+          child: PopupMenuButton(
+            // constraints: BoxConstraints.expand(
+            //   width: mWidth * 0.3,
+            //   height: mHeight * 0.17,
+            // ),
+            constraints: BoxConstraints.expand(
+              width: mWidth * 0.22,
+              height: mHeight * 0.16,
+            ),
+            key: btnKey,
+            child: Icon(Icons.add),
+            // onSelected: (value) {
+            //   print(value);
+            // },
+            elevation: 0,
+            color: Theme.of(context).backgroundColor.withOpacity(0),
+            // color: Colors.purple,
+            // position: PopupMenuPosition.values[1],
+            // position: PopupMenuPosition.over,
+            offset: const Offset(0, -150),
+            // offset: Offset(bx - 216, -(by - 575)),
+            // color: Colors.white.withOpacity(0.5),
+            // color: Colors.black,
+            itemBuilder: (BuildContext bc) {
+              return [
+                PopupMenuItem(
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 5),
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: Icon(Icons.note_add_outlined),
+                      style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.all(15),
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ),
+                  value: '/hello',
+                ),
+                PopupMenuItem(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // dynamic state = btnKey.currentState;
+                      // state.showButtonMenu();
+                      // state.close();
+                      // btnKey.currentState = !btnKey.currentState;
+                      // print(btnKey.currentState);
+                      LaunchInModal();
+                    },
+                    child: Icon(Icons.note_alt_outlined),
+                    style: ElevatedButton.styleFrom(
+                      shape: CircleBorder(),
+                      padding: EdgeInsets.all(15),
+                      backgroundColor: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  value: '/about',
+                ),
+              ];
+            },
+          ),
+        ),
         body: _received
             ? _selection == 0
                 ? Column(

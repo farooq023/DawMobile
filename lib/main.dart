@@ -20,6 +20,7 @@ import './providers/outboxPro.dart';
 import './providers/archivedPro.dart';
 import './providers/fileProvider.dart';
 import './providers/languageProvider.dart';
+import './providers/launchInDocProv.dart';
 
 void main() {
   runApp(const MyApp());
@@ -60,14 +61,6 @@ class _MyAppState extends State<MyApp> {
           update: (_, auth, data) => InboxPro(auth.accessToken, auth.userID),
         ),
         
-        // ChangeNotifierProxyProvider2<Auth, InFilterProvider, InboxPro>(
-        //   create: (ctx) => InboxPro('', 0, false),
-        //   update: (_, auth, filt, data) => InboxPro(auth.accessToken, auth.userID, InFilterProvider.filter),
-        // ),
-
-        // ChangeNotifierProvider.value(
-        //   value: InFilterProvider(),
-        // ),
         ChangeNotifierProxyProvider<Auth, OutboxPro>(
           create: (ctx) => OutboxPro('', 0),
           update: (_, auth, data) => OutboxPro(auth.accessToken, auth.userID),
@@ -80,6 +73,10 @@ class _MyAppState extends State<MyApp> {
           create: (ctx) => FileProvider('', 0),
           update: (_, auth, data) =>
               FileProvider(auth.accessToken, auth.userID),
+        ),
+        ChangeNotifierProxyProvider<Auth, LaunchInDocProv>(
+          create: (ctx) => LaunchInDocProv('', 0),
+          update: (_, auth, data) => LaunchInDocProv(auth.accessToken, auth.userID),
         ),
       ],
       child: Consumer2<Auth, LanguageProvider>(
@@ -101,7 +98,7 @@ class _MyAppState extends State<MyApp> {
             primaryColor: const Color(0xFF1976D2),
             backgroundColor: const Color.fromARGB(255, 237, 244, 250),
             // colorScheme: ColorSch(0xFF81c784),
-            bottomAppBarColor: const Color(0xFF64B5F6),
+            // bottomAppBarColor: const Color(0xFF64B5F6),
             // accentColor: Colors.deepOrange, Color(0xFFC8E6C9),
             // fontFamily: 'Lato',
           ),

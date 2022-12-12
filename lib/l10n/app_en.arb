@@ -22,6 +22,12 @@
     "subject":"Subject",
     "clear":"Clear",
 
+    "internalMemo":"Internal Memo",
+    "priority":"Priority",
+    "action":"Action",
+    "endingDate":"Ending Date",
+
+
     
     "dashboard":"Dashboard",
     "inbox":"Inbox",
