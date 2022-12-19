@@ -43,6 +43,8 @@ dependencies:
   syncfusion_flutter_datepicker: ^20.3.52
   textfield_search: ^0.10.0
   cupertino_icons: ^1.0.2
+  file_picker: ^5.2.4
+  open_file_plus: ^3.3.0
 
 dev_dependencies:
   flutter_test:

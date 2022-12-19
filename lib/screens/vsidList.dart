@@ -44,11 +44,17 @@ class _VsIdListState extends State<VsIdList> {
   }
 
   void fetchFileFromUrl() async {
-    setState(() {
+    setState(() { 
       url = '';
     });
     url = await Provider.of<FileProvider>(context, listen: false)
         .getFileUrl(widget.detID, vsids[currVsId]['vsID']);
+    print("URL");
+    print(url);
+    if(!url.endsWith(".pdf")){
+      print("adding .pdf");
+      url+=".pdf";
+    }
     setState(() {});
   }
 

@@ -60,7 +60,6 @@ class _MyAppState extends State<MyApp> {
           create: (ctx) => InboxPro('', 0),
           update: (_, auth, data) => InboxPro(auth.accessToken, auth.userID),
         ),
-        
         ChangeNotifierProxyProvider<Auth, OutboxPro>(
           create: (ctx) => OutboxPro('', 0),
           update: (_, auth, data) => OutboxPro(auth.accessToken, auth.userID),
@@ -119,3 +118,6 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+
+
+//compileSdkVersion flutter.compileSdkVersion

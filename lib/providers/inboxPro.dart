@@ -52,11 +52,10 @@ class InboxPro with ChangeNotifier {
   }
 
   Future<List<Map>> getFullInbox() async {
-    String url;
+    String url = '${IpProvider.ip}api/WFInbox/GetWfinbox';
     var response;
 
     if (InFilterProvider.filter) {
-      url = '${IpProvider.ip}api/WFInbox/GetWfinbox';
       response = await http.post(
         Uri.parse(url),
         headers: {
@@ -70,48 +69,7 @@ class InboxPro with ChangeNotifier {
           'IDateTo': InFilterProvider.endDate
         },
       );
-      // if (InFilterProvider.reqNo != '' && InFilterProvider.subject == '') {
-      //   url = '${IpProvider.ip}api/WFInbox/GetWfinbox';
-      //   response = await http.post(
-      //     Uri.parse(url),
-      //     headers: {
-      //       'Authorization': 'Bearer $accessToken',
-      //     },
-      //     body: {
-      //       'UserID': '$uID',
-      //       'RequisitionNo': InFilterProvider.reqNo,
-      //     },
-      //   );
-      // }
-      // else if (InFilterProvider.reqNo == '' && InFilterProvider.subject != '') {
-      //   url = '${IpProvider.ip}api/WFInbox/GetWfinbox';
-      //   response = await http.post(
-      //     Uri.parse(url),
-      //     headers: {
-      //       'Authorization': 'Bearer $accessToken',
-      //     },
-      //     body: {
-      //       'UserID': '$uID',
-      //       'Subject': InFilterProvider.subject,
-      //     },
-      //   );
-      // }
-      // else{
-      //   url = '${IpProvider.ip}api/WFInbox/GetWfinbox';
-      //   response = await http.post(
-      //     Uri.parse(url),
-      //     headers: {
-      //       'Authorization': 'Bearer $accessToken',
-      //     },
-      //     body: {
-      //       'UserID': '$uID',
-      //       'RequisitionNo': InFilterProvider.reqNo,
-      //       'Subject': InFilterProvider.subject,
-      //     },
-      //   );
-      // }
     } else {
-      url = '${IpProvider.ip}api/WFInbox/GetWfinbox';
       response = await http.post(
         Uri.parse(url),
         headers: {
@@ -197,9 +155,6 @@ class InboxPro with ChangeNotifier {
         );
       }
     }
-
-    // print(setInbox[0]['searchString']);
-    // print(setInbox[1]['searchString']);
 
     return setInbox;
   }

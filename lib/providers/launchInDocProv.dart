@@ -183,7 +183,7 @@ class LaunchInDocProv with ChangeNotifier {
   // ************************************************** //
   // ************************************************** //
 
-  Future<List<Map>> getEmployees(String text) async {
+  Future<List<String>> getEmployees(String text) async {
     // if (!rcvd) {
 
     String url = '${IpProvider.ip}api/WFLaunch/SearchEmployees';
@@ -199,8 +199,8 @@ class LaunchInDocProv with ChangeNotifier {
       },
     );
 
-    List<Map> users = [];
-    // List<String> users = [];
+    // List<Map> users = [];
+    List<String> users = [];
     // List<List> users2 = [[], []];
 
     String primName = "Name";
@@ -214,13 +214,14 @@ class LaunchInDocProv with ChangeNotifier {
         secName = "Name";
       }
       for (int i = 0; i < rcvdUsers.length; i++) {
-        // users.add((rcvdUsers[i][primName] ?? rcvdUsers[i][secName]) + "  ;  " + rcvdUsers[i]['UserID'].toString()
-        users.add(
-          {
-            "UserID": rcvdUsers[i]['UserID'],
-            "name": rcvdUsers[i][primName] ?? rcvdUsers[i][secName],
-          },
-        );
+        String n = rcvdUsers[i][primName] ?? rcvdUsers[i][secName];
+        users.add( n + "   i" + rcvdUsers[i]['UserID'].toString() );
+        // users.add(
+        //   {
+        //     "UserID": rcvdUsers[i]['UserID'],
+        //     "name": rcvdUsers[i][primName] ?? rcvdUsers[i][secName],
+        //   },
+        // );
       }
       // for (int i = 0; i < rcvdUsers.length; i++) {
       //   users2[0].add(
