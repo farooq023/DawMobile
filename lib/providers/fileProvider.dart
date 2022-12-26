@@ -40,6 +40,8 @@ class FileProvider with ChangeNotifier {
     );
 
     var res = await json.decode(response.body);
+    print("res is");
+    print(res);
     url = res['Result']['Document'][0]['FileURL'];
 
     if (url.startsWith('http://ser-dew-001.scpd.com')) {

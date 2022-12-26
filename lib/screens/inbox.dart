@@ -332,8 +332,14 @@ class _InboxState extends State<Inbox> {
                                       setState(() {});
                                     },
                                     child: Container(
-                                      height: mHeight * 0.17,
+                                      height: mHeight * 0.135,
                                       padding: const EdgeInsets.all(6),
+                                      // decoration: BoxDecoration(
+                                      //   border: Border.all(
+                                      //     width: 1,
+                                      //     color: Colors.black,
+                                      //   ),
+                                      // ),
                                       // color: ,
                                       child: Row(
                                         children: [
@@ -347,11 +353,13 @@ class _InboxState extends State<Inbox> {
                                             width: mWidth * 0.138,
                                             child: Column(
                                               children: [
-                                                const Align(
+                                                Align(
                                                   alignment: Alignment(0, -1),
                                                   child: Icon(
                                                     Icons.account_circle,
                                                     size: 48,
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
                                                   ),
                                                 ),
                                                 Align(
@@ -386,6 +394,9 @@ class _InboxState extends State<Inbox> {
                                                       child: Text(
                                                         "${_setInbox[i]['Sender']}",
                                                         style: const TextStyle(
+                                                          // color:
+                                                          //     Theme.of(context)
+                                                          //         .primaryColor,
                                                           fontSize: 22,
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -402,9 +413,11 @@ class _InboxState extends State<Inbox> {
                                                                 1, 0),
                                                         child: Text(
                                                           "${_setInbox[i]['WFBeginDate']}",
-                                                          style:
-                                                              const TextStyle(
+                                                          style: const TextStyle(
                                                             fontSize: 15,
+                                                            // color: Theme.of(
+                                                            //         context)
+                                                            //     .primaryColor,
                                                             // fontWeight: FontWeight.bold,
                                                             // color: Colors.blue,
                                                           ),
@@ -420,7 +433,8 @@ class _InboxState extends State<Inbox> {
                                                     "${_setInbox[i]['SUBJECT']}",
                                                     style: const TextStyle(
                                                       fontSize: 18,
-                                                      // color: Colors.blue,
+                                                      // color: Theme.of(context)
+                                                      //     .primaryColor,
                                                     ),
                                                     maxLines: 1,
                                                   ),
@@ -431,7 +445,8 @@ class _InboxState extends State<Inbox> {
                                                     "${_setInbox[i]['RequisitionNo']}",
                                                     style: const TextStyle(
                                                       fontSize: 15,
-                                                      // color: Colors.blue,
+                                                      // color: Theme.of(context)
+                                                      //     .primaryColor,
                                                     ),
                                                     maxLines: 1,
                                                   ),
@@ -501,9 +516,10 @@ class _InboxState extends State<Inbox> {
                                       width: mWidth * 0.45,
                                       child: Text(
                                         "${_setInbox[i]['Sender']}",
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 22,
                                           fontWeight: FontWeight.bold,
+                                          color: Theme.of(context).primaryColor,
                                           // color: Colors.blue,
                                         ),
                                         maxLines: 1,
@@ -515,8 +531,10 @@ class _InboxState extends State<Inbox> {
                                         alignment: const Alignment(1, 0),
                                         child: Text(
                                           "${_setInbox[i]['WFBeginDate']}",
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontSize: 15,
+                                            color:
+                                                Theme.of(context).primaryColor,
                                             // fontWeight: FontWeight.bold,
                                             // color: Colors.blue,
                                           ),
@@ -530,8 +548,9 @@ class _InboxState extends State<Inbox> {
                                   width: mWidth * 0.45,
                                   child: Text(
                                     "${_setInbox[i]['SUBJECT']}",
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 18,
+                                      // color: Theme.of(context).primaryColor,
                                       // color: Colors.blue,
                                     ),
                                     maxLines: 1,
@@ -541,8 +560,9 @@ class _InboxState extends State<Inbox> {
                                   width: mWidth * 0.85,
                                   child: Text(
                                     "${_setInbox[i]['RequisitionNo']}",
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 15,
+                                      color: Theme.of(context).primaryColor,
                                       // color: Colors.blue,
                                     ),
                                     maxLines: 1,

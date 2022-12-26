@@ -25,19 +25,19 @@ class _LaunchInDocState extends State<LaunchInDoc> {
   TextEditingController actionController = TextEditingController();
   TextEditingController recipientController = TextEditingController();
 
-  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
-
   rules? selectedRule;
 
-  String actionValue = '';
-  String priorityValue = '';
+  // String actionValue = '';
   double labelSize = 20;
   double marginBottom = 10;
 
-  List<String> priorities = [];
-  List<String> actions = [];
-  // List<Map> rcvdResult = [];
+  List priorities = [];
+  List priorityIds = [];
+  String priorityValue = '';
+
+  List actions = [];
+  List actionIds = [];
+
   List<String> rcvdResult = [];
   // List<String> rcvdResultUsers = [];
   // List<int> rcvdResultId = [];
@@ -45,6 +45,8 @@ class _LaunchInDocState extends State<LaunchInDoc> {
   List<String> recipientsString = [];
   List<Map> recipients = [];
   List<Map> files = [];
+
+  List<String> incompleteEntries = [];
 
   @override
   void initState() {
@@ -58,17 +60,18 @@ class _LaunchInDocState extends State<LaunchInDoc> {
   }
 
   void callProviders() async {
-    priorities = await Provider.of<LaunchInDocProv>(context, listen: false)
-        .getWfPriorities();
+    List<List> prioritiesWithIds =
+        await Provider.of<LaunchInDocProv>(context, listen: false)
+            .getWfPriorities();
+    priorities = prioritiesWithIds[0];
+    priorityIds = prioritiesWithIds[1];
     priorityValue = priorities[0];
 
-    actions = await Provider.of<LaunchInDocProv>(context, listen: false)
-        .getWfActions();
-    // print(actionValue.characters);
-    // actionValue = 'sf';
-    // print(actionValue.characters);
-    actionValue = actions[0];
-    // print(actionValue.characters);
+    List<List> actionsWithIds =
+        await Provider.of<LaunchInDocProv>(context, listen: false)
+            .getWfActions();
+    actions = actionsWithIds[0];
+    actionIds = actionsWithIds[1];
     setState(() {});
   }
 
@@ -140,8 +143,8 @@ class _LaunchInDocState extends State<LaunchInDoc> {
       var newDate = DateTime(
           DateTime.now().year, DateTime.now().month, DateTime.now().day + 1);
       String formattedDate = DateFormat("dd/MM/yyyy").format(newDate);
-      print("formattedDate");
-      print(formattedDate);
+      // print("formattedDate");
+      // print(formattedDate);
       recipients.add(
         {
           "name": recipient[0],
@@ -149,11 +152,196 @@ class _LaunchInDocState extends State<LaunchInDoc> {
           "action": actions.contains(actionController.text)
               ? actionController.text
               : "",
-          "date": formattedDate
+          "date": formattedDate,
+          "notes": ""
         },
       );
       recipientController.clear();
     });
+  }
+
+  void showUserDialog(int index) {
+    TextEditingController editActionController = TextEditingController();
+    TextEditingController notesCtrl = TextEditingController();
+    TextEditingController editDateController = TextEditingController();
+
+    DateTime userDateOb = DateTime(DateTime.now().day + 1);
+
+    if (recipients[index]["date"].isNotEmpty) {
+      var userDate = recipients[index]["date"].split("/");
+      String datee = userDate[2] +
+          "-" +
+          userDate[1] +
+          "-" +
+          userDate[0]; //    "dd/MM/yyyy"
+      userDateOb = DateTime.parse(datee);
+    }
+
+    // print(userDateOb);
+
+    editActionController.text = recipients[index]["action"];
+    editDateController.text = recipients[index]["date"];
+    notesCtrl.text = recipients[index]["notes"];
+
+    showDialog(
+      context: context,
+      // barrierDismissible: false,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          backgroundColor: Theme.of(context).backgroundColor,
+          title: Column(
+            children: [
+              Text(
+                'Individual User Options',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              Text(
+                recipients[index]["name"],
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ],
+          ),
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.all(12),
+              child: TextFieldSearch(
+                itemsInView: 4,
+                controller: editActionController,
+                initialList: actions,
+                label: '',
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).backgroundColor,
+                  hintText: "Type to search actions...",
+                  labelText: AppLocalizations.of(context)!.action,
+                  labelStyle: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: labelSize,
+                  ),
+                  // border: CustomBorderTextFieldSkin().getSkin(),
+                  suffixIcon: editActionController.text != ''
+                      ? IconButton(
+                          onPressed: () {
+                            setState(() {
+                              editActionController.clear();
+                            });
+                          },
+                          icon: Icon(
+                            Icons.clear,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        )
+                      : null,
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(12),
+              child: TextField(
+                controller: editDateController,
+                decoration: InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: AppLocalizations.of(context)!.endingDate,
+                  labelStyle: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: labelSize,
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  suffixIcon: editDateController.text != ''
+                      ? IconButton(
+                          onPressed: () {
+                            setState(() {
+                              editDateController.clear();
+                            });
+                          },
+                          icon: const Icon(Icons.clear),
+                        )
+                      : null,
+                ),
+                textInputAction: TextInputAction.search,
+                readOnly: true,
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: userDateOb, //        round/selected date
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(DateTime.now().year + 2),
+                  );
+                  if (pickedDate != null) {
+                    setState(() {
+                      String formattedDate =
+                          DateFormat("dd/MM/yyyy").format(pickedDate);
+                      editDateController.text = formattedDate;
+                    });
+                  }
+                },
+              ),
+            ),
+            Container(
+              // decoration: BoxDecoration(
+              //   border: Border.all(
+              //     color: Colors.red,
+              //     width: 1,
+              //   ),
+              // ),
+              padding: EdgeInsets.all(12),
+              child: TextFormField(
+                keyboardType: TextInputType.multiline,
+                controller: notesCtrl,
+                decoration: InputDecoration(
+                  border: const UnderlineInputBorder(),
+                  labelText: "Notes",
+                  labelStyle: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: labelSize,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                  suffixIcon: notesCtrl.text != ''
+                      ? IconButton(
+                          onPressed: () {
+                            setState(() {
+                              notesCtrl.clear();
+                            });
+                          },
+                          icon: Icon(
+                            Icons.clear,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        )
+                      : null,
+                ),
+                textInputAction: TextInputAction.search,
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.only(top: 24, right: 12),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton(
+                  child: const Text("Save"),
+                  onPressed: () {
+                    if (actions.contains(editActionController.text)) {
+                      recipients[index]["action"] = editActionController.text;
+                    }
+                    recipients[index]["date"] = editDateController.text;
+                    recipients[index]["notes"] = notesCtrl.text;
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -166,209 +354,223 @@ class _LaunchInDocState extends State<LaunchInDoc> {
     var mWidth = mSize.width;
     var cWidth = mWidth * 0.82;
 
-    Future<void> showSimpleDialog(int index) async {
-      TextEditingController editActionController = TextEditingController();
-      TextEditingController editDateController = TextEditingController();
+    Widget setupAlertDialoadContainer() {
+      return Container(
+        height: mHeight * 0.15,
+        width: double.maxFinite,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: incompleteEntries.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Text(
+              incompleteEntries[index],
+              style: TextStyle(
+                fontSize: 18,
+                color: Theme.of(context).primaryColor,
+              ),
+            );
+          },
+        ),
+      );
+    }
 
-      var userDate = recipients[index]["date"].split("/");
-      String datee = userDate[2] +
-          "-" +
-          userDate[1] +
-          "-" +
-          userDate[0]; //    "dd/MM/yyyy"
-      DateTime userDateOb = DateTime.parse(datee);
-      print(userDateOb);
-
-      editActionController.text = recipients[index]["action"];
-      editDateController.text = recipients[index]["date"];
-
-      // if (recipients[index]["date"].isEmpty) {
-      //   var newDate = DateTime(
-      //       DateTime.now().year, DateTime.now().month, DateTime.now().day + 1);
-      //   String formattedDate = DateFormat("dd/MM/yyyy").format(newDate);
-      //   editDateController.text = formattedDate;
-      // }
-
-      await showDialog<void>(
+    showAlertDialog() {
+      return showDialog<void>(
         context: context,
+        // barrierDismissible: false,
         builder: (BuildContext context) {
-          return SimpleDialog(
+          return AlertDialog(
             backgroundColor: Theme.of(context).backgroundColor,
-            title: Column(
-              children: [
-                Text(
-                  'Individual User Options',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-                Text(
-                  recipients[index]["name"],
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              ],
+            title: const Icon(
+              Icons.warning,
+              color: Colors.red,
+              size: 45,
             ),
-            children: <Widget>[
-              Container(
-                // height: mHeight * 0.1,
-                // width: mWidth * 0.1,
-                // color: Colors.purple,
-                padding: EdgeInsets.all(12),
-                child: TextFieldSearch(
-                  itemsInView: 4,
-                  controller: editActionController,
-                  initialList: actions,
-                  label: '',
-                  // getSelectedValue: (value) {
-                  //   print("Selected value");
-                  //   print(value);
-                  // },
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Theme.of(context).backgroundColor,
-                    hintText: "Type to search actions...",
-                    labelText: AppLocalizations.of(context)!.action,
-                    labelStyle: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontSize: labelSize,
-                    ),
-                    // border: CustomBorderTextFieldSkin().getSkin(),
-                    suffixIcon: editActionController.text != ''
-                        ? IconButton(
-                            onPressed: () {
-                              setState(() {
-                                editActionController.clear();
-                              });
-                            },
-                            icon: Icon(
-                              Icons.clear,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          )
-                        : null,
+            content: setupAlertDialoadContainer(),
+            actions: [
+              OutlinedButton(
+                child: Text(
+                  'Close',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Theme.of(context).primaryColor,
                   ),
                 ),
-              ),
-              Container(
-                // width: cWidth,
-                // margin: EdgeInsets.only(bottom: marginBottom),
-                padding: EdgeInsets.all(12),
-                child: TextField(
-                  
-                  controller: editDateController,
-                  decoration: InputDecoration(
-                    border: UnderlineInputBorder(),
-                    // hintText: AppLocalizations.of(context)!.search,
-                    // labelText: "Ending Date",
-                    labelText: AppLocalizations.of(context)!.endingDate,
-                    labelStyle: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontSize: labelSize,
-                    ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                    suffixIcon: editDateController.text != ''
-                        ? IconButton(
-                            onPressed: () {
-                              setState(() {
-                                editDateController.clear();
-                              });
-                            },
-                            icon: const Icon(Icons.clear),
-                          )
-                        : null,
-                  ),
-                  textInputAction: TextInputAction.search,
-                  readOnly: true,
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: userDateOb, //        round/selected date
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime(DateTime.now().year + 2),
-                    );
-                    if (pickedDate != null) {
-                      setState(() {
-                        String formattedDate =
-                            DateFormat("dd/MM/yyyy").format(pickedDate);
-                        editDateController.text = formattedDate;
-                      });
-                    }
-                  },
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: Theme.of(context).primaryColor),
                 ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
-              Container(
-                padding: EdgeInsets.only(right: 12),
-                // color: Colors.black87,
-                // height: mHeight * 0.1,
-                // width: mWidth * 0.1,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: ElevatedButton(
-                    child: const Text("Save"),
-                    onPressed: () {
-                      if (actions.contains(editActionController.text)) {
-                        recipients[index]["action"] = editActionController.text;
-                      }
-                      if (editDateController.text != "") {
-                        recipients[index]["date"] = editDateController.text;
-                      }
-                      Navigator.of(context).pop();
-                      // Navigator.of(context,rootNavigator: true).pop();
-                    },
-                  ),
-                ),
-              ),
-
-              // Navigator.of(context).pop();
-              // Container(
-              //   width: mWidth * 0.1,
-              //   // height: mHeight * 0.09,
-              //   margin: EdgeInsets.only(bottom: marginBottom),
-              //   child: TextFieldSearch(
-              //     itemsInView: 4,
-              //     controller: editActionController,
-              //     initialList: actions,
-              //     label: '',
-              //     // getSelectedValue: (value) {
-              //     //   print("Selected value");
-              //     //   print(value);
-              //     // },
-              //     decoration: InputDecoration(
-              //       filled: true,
-              //       fillColor: Theme.of(context).backgroundColor,
-              //       hintText: 'Type to search actions...',
-              //       labelText: AppLocalizations.of(context)!.action,
-              //       labelStyle: TextStyle(
-              //         color: Theme.of(context).primaryColor,
-              //         fontSize: labelSize,
-              //       ),
-              //       // border: CustomBorderTextFieldSkin().getSkin(),
-              //       suffixIcon: editActionController.text != ''
-              //           ? IconButton(
-              //               onPressed: () {
-              //                 setState(() {
-              //                   editActionController.clear();
-              //                 });
-              //               },
-              //               icon: Icon(
-              //                 Icons.clear,
-              //                 color: Theme.of(context).primaryColor,
-              //               ),
-              //             )
-              //           : null,
-              //     ),
-              //   ),
-              // ),
             ],
           );
         },
       );
+    }
+
+    showStatusDialog(bool res) {
+      return showDialog<void>(
+        context: context,
+        // barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Theme.of(context).backgroundColor,
+            title: res
+                ? const Icon(
+                    Icons.check_circle_outline,
+                    color: Colors.green,
+                    size: 45,
+                  )
+                : const Icon(
+                    Icons.clear,
+                    color: Colors.red,
+                    size: 45,
+                  ),
+            content: Container(
+              height: mHeight * 0.07,
+              width: double.maxFinite,
+              child: Center(
+                child: Text(
+                  res
+                      ? "Execution Successful!"
+                      : "An error occured during execution!",
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ),
+              // }
+            ),
+            actions: [
+              OutlinedButton(
+                child: Text(
+                  'Close',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: Theme.of(context).primaryColor),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    void execute() async {
+      incompleteEntries.clear();
+      if (subjectCtrl.text.isEmpty) {
+        incompleteEntries.add("- Add Subject.");
+      }
+      if (actionController.text.isNotEmpty &&
+          !actions.contains(actionController.text)) {
+        incompleteEntries.add("- Invalid Action!");
+      }
+      if (recipients.isEmpty) {
+        incompleteEntries.add("- Add at least one recipient.");
+      } else {
+        var arrayFinalDate = dateCtrl.text.split("/");
+        String stringFinalDate = arrayFinalDate[2] +
+            "-" +
+            arrayFinalDate[1] +
+            "-" +
+            arrayFinalDate[0];
+        DateTime obfinalDate = DateTime.parse(stringFinalDate);
+
+        for (int i = 0; i < recipients.length; i++) {
+          if (recipients[i]["date"].isNotEmpty) {
+            var userFinalDate = recipients[i]["date"].split("/");
+            String stringUserDate = userFinalDate[2] +
+                "-" +
+                userFinalDate[1] +
+                "-" +
+                userFinalDate[0];
+            DateTime obUserDate = DateTime.parse(stringUserDate);
+
+            if (obUserDate.isAfter(obfinalDate)) {
+              incompleteEntries.add("- Invalid date selection for " +
+                  recipients[i]["name"] +
+                  ".");
+            }
+          }
+        }
+      }
+      if (files.isEmpty) {
+        incompleteEntries.add("- Attach at least one file.");
+      }
+      if (incompleteEntries.length > 0) {
+        showAlertDialog();
+      } else {
+        List<String> paths = [];
+        for (int i = 0; i < files.length; i++) paths.add(files[i]["path"]);
+        // print("rcvng fileData");
+        dynamic filesData =
+            await Provider.of<LaunchInDocProv>(context, listen: false)
+                .uploadFileAndGetItsData(paths);
+        // print("fileData : ");
+        // print(filesData);
+
+        int actionID =
+            actionIds[actions.indexOf(actionController.text)]; //    1
+        int priorityID = priorityIds[priorities.indexOf(priorityValue)]; //    3
+        List wfDate = dateCtrl.text.split("/");
+        String wfEndDate =
+            wfDate[2] + "-" + wfDate[1] + "-" + wfDate[0]; //    4
+
+        List<Map> launchToUsers = [];
+        for (int i = 0; i < recipients.length; i++) {
+          int userActionID;
+          if (recipients[i]["action"] == actionController.text)
+            userActionID = actionID;
+          else
+            userActionID =
+                actionIds[actions.indexOf(actionController.text)]; //    date
+
+          var userDateA = recipients[i]["date"].split("/");
+          String userDateS =
+              userDateA[2] + "-" + userDateA[1] + "-" + userDateA[0];
+
+          // print("|"+userDateS+"|");
+
+          Map user = {
+            //    <String, dynamic>
+            "RecipientID":
+                '${recipients[i]["id"]}', //    '${recipients[i]["id"]}'         recipients[i]["id"]
+            "RecipientName": recipients[i]["name"],
+            "ActionID": '$userActionID', //          '$userActionID'
+            "ActionName": recipients[i]["action"],
+            "Deadline": userDateS,
+            "Comment": recipients[i]["notes"],
+          };
+          launchToUsers.add(user);
+        }
+
+        Map<String, dynamic> finalObject = {
+          //    <String, dynamic>
+          "actID": actionID,
+          "Subject": subjectCtrl.text,
+          "PrioID": priorityID,
+          "WfEndD": wfEndDate,
+          "filessss": filesData,
+          "LaunchToUsers": launchToUsers,
+        };
+
+        bool res = await Provider.of<LaunchInDocProv>(context, listen: false)
+            .launchWorkflow(finalObject);
+        // if (res) {
+        await showStatusDialog(res);
+        if (res) Navigator.of(context).pop();
+
+        // }
+      }
     }
 
     return Container(
@@ -378,16 +580,8 @@ class _LaunchInDocState extends State<LaunchInDoc> {
       padding: const EdgeInsets.all(10),
       child: SafeArea(
         child: Column(
-          //     Column       ListView
           children: [
             Container(
-              // height: mHeight * 0.04,
-              // decoration: BoxDecoration(
-              //   border: Border.all(
-              //     color: Colors.purple,
-              //     width: 1,
-              //   ),
-              // ),
               margin: const EdgeInsets.only(top: 10, bottom: 18),
               child: Text(
                 AppLocalizations.of(context)!.internalMemo,
@@ -398,29 +592,8 @@ class _LaunchInDocState extends State<LaunchInDoc> {
                   color: Theme.of(context).primaryColor,
                 ),
               ),
-              // Row(
-              //   // mainAxisAlignment: MainAxisAlignment.values[1],
-              //   children: [
-
-              //     Text(
-              //       AppLocalizations.of(context)!.internalMemo,
-              //       // 'Internal Memo',
-              //       style: TextStyle(
-              //         fontSize: 24,
-              //         fontWeight: FontWeight.bold,
-              //         color: Theme.of(context).primaryColor,
-              //       ),
-              //     ),
-              //   ],
-              // ),
             ),
             Container(
-              // decoration: BoxDecoration(
-              //   border: Border.all(
-              //     color: Colors.purple,
-              //     width: 1,
-              //   ),
-              // ),
               height: mHeight * 0.825,
               width: double.infinity,
               child: SingleChildScrollView(
@@ -483,13 +656,13 @@ class _LaunchInDocState extends State<LaunchInDoc> {
                           isExpanded: true,
                           value: priorityValue,
                           icon: const Icon(Icons.keyboard_arrow_down),
-                          items: priorities.map((String actions) {
+                          items: priorities.map((actions) {
                             return DropdownMenuItem(
                               value: actions,
                               child: Text(actions),
                             );
                           }).toList(),
-                          onChanged: (String? newValue) {
+                          onChanged: (dynamic? newValue) {
                             setState(() {
                               priorityValue = newValue!;
                             });
@@ -550,16 +723,16 @@ class _LaunchInDocState extends State<LaunchInDoc> {
                             ),
                             contentPadding:
                                 EdgeInsets.symmetric(horizontal: 10),
-                            suffixIcon: dateCtrl.text != ''
-                                ? IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        dateCtrl.clear();
-                                      });
-                                    },
-                                    icon: const Icon(Icons.clear),
-                                  )
-                                : null,
+                            // suffixIcon: dateCtrl.text != ''
+                            //     ? IconButton(
+                            //         onPressed: () {
+                            //           setState(() {
+                            //             dateCtrl.clear();
+                            //           });
+                            //         },
+                            //         icon: const Icon(Icons.clear),
+                            //       )
+                            //     : null,
                           ),
                           textInputAction: TextInputAction.search,
                           controller: dateCtrl,
@@ -567,8 +740,11 @@ class _LaunchInDocState extends State<LaunchInDoc> {
                           onTap: () async {
                             DateTime? pickedDate = await showDatePicker(
                               context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime.now(),
+                              // initialDate: DateTime.now(),
+                              initialDate: DateTime(DateTime.now().year,
+                                  DateTime.now().month + 1, DateTime.now().day),
+                              firstDate: DateTime(DateTime.now().year,
+                                  DateTime.now().month, DateTime.now().day + 1),
                               lastDate: DateTime(DateTime.now().year + 2),
                             );
                             if (pickedDate != null) {
@@ -581,68 +757,6 @@ class _LaunchInDocState extends State<LaunchInDoc> {
                           },
                         ),
                       ),
-                      // Container(
-                      //   width: cWidth,
-                      //   // height: mHeight * 0.2,
-                      //   // decoration: BoxDecoration(
-                      //   //   // borderRadius: BorderRadius.circular(10),
-                      //   //   border: Border.all(
-                      //   //     color: Theme.of(context).primaryColor,
-                      //   //     width: 1,
-                      //   //   ),
-                      //   // ),
-                      //   margin: EdgeInsets.only(bottom: marginBottom),
-                      //   child: TextFieldSearch(
-                      //     itemsInView: 4,
-                      //     controller: recipientController,
-                      //     initialList:
-                      //         rcvdResult, //rcvdResult     rcvdResultUsers
-                      //     // future: () {
-                      //     //   return fetchComplexData();
-                      //     // },
-                      //     label: '',
-                      //     // getSelectedValue: () {
-                      //     //   print('in getSelectedValue');
-                      //     //   // print(value);
-                      //     // },
-                      //     decoration: InputDecoration(
-                      //       filled: true,
-                      //       fillColor: Theme.of(context).backgroundColor,
-                      //       // labelText: AppLocalizations.of(context)!.action,
-                      //       labelText: 'Recipient',
-                      //       hintText: 'Type to search recipients...',
-                      //       labelStyle: TextStyle(
-                      //         color: Theme.of(context).primaryColor,
-                      //         fontSize: labelSize,
-                      //       ),
-                      //       // border: CustomBorderTextFieldSkin().getSkin(),
-                      //       suffixIcon: recipientController.text != ''
-                      //           ? IconButton(
-                      //               icon: Icon(
-                      //                 rcvdResult.contains(
-                      //                             recipientController.text) &&
-                      //                         !recipientsString.contains(
-                      //                             recipientController.text)
-                      //                     ? Icons.check
-                      //                     : Icons.clear_outlined,
-                      //                 color: Theme.of(context).primaryColor,
-                      //                 // color: Colors.green,
-                      //               ),
-                      //               onPressed: rcvdResult.contains(
-                      //                           recipientController.text) &&
-                      //                       !recipientsString.contains(
-                      //                           recipientController.text)
-                      //                   ? addRecipient
-                      //                   : () {
-                      //                       setState(() {
-                      //                         recipientController.clear();
-                      //                       });
-                      //                     },
-                      //             )
-                      //           : null,
-                      //     ),
-                      //   ),
-                      // ),
                       Container(
                         width: cWidth,
                         margin: EdgeInsets.only(bottom: marginBottom),
@@ -747,7 +861,7 @@ class _LaunchInDocState extends State<LaunchInDoc> {
                                                 children: [
                                                   IconButton(
                                                     onPressed: () =>
-                                                        showSimpleDialog(index),
+                                                        showUserDialog(index),
                                                     icon: const Icon(Icons
                                                         .drive_file_rename_outline),
                                                     color: Theme.of(context)
@@ -791,7 +905,7 @@ class _LaunchInDocState extends State<LaunchInDoc> {
                                   ? ListTile(
                                       leading: Icon(
                                         // Icons.account_circle,
-                                        Icons.no_accounts_rounded,
+                                        Icons.insert_page_break,
                                         color: Theme.of(context).primaryColor,
                                       ),
                                       title: const Text('No attachment'),
@@ -805,7 +919,7 @@ class _LaunchInDocState extends State<LaunchInDoc> {
                                       itemBuilder: (context, index) {
                                         return ListTile(
                                           leading: Icon(
-                                            Icons.insert_drive_file_outlined,
+                                            Icons.insert_drive_file,
                                             color:
                                                 Theme.of(context).primaryColor,
                                           ),
@@ -858,17 +972,12 @@ class _LaunchInDocState extends State<LaunchInDoc> {
                                 //     width: 1,
                                 //   ),
                                 // ),
-                                margin: EdgeInsets.only(right: 8, bottom: 8),
+                                margin: EdgeInsets.only(right: 10, bottom: 10),
                                 child: FloatingActionButton(
                                   backgroundColor:
                                       Theme.of(context).primaryColor,
-                                  // mini: false,
                                   onPressed: () {
                                     _pickFile();
-                                    // print("object");
-                                    // LaunchInModal();
-                                    // dynamic state = btnKey.currentState;
-                                    // state.showButtonMenu();
                                   },
                                   child: IconButton(
                                     onPressed: () {
@@ -899,11 +1008,7 @@ class _LaunchInDocState extends State<LaunchInDoc> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          onPressed: () {
-                            // _pickFile();
-                            // print(actionController.text);
-                            // print(actionController);
-                          },
+                          onPressed: execute,
                           child: Text(
                             'Execute',
                             style: TextStyle(

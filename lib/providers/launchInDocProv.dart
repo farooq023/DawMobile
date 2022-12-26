@@ -15,8 +15,7 @@ class LaunchInDocProv with ChangeNotifier {
   LaunchInDocProv(this.accessToken, this.uID);
   // bool rcvd = false;
 
-  Future<List<String>> getWfPriorities() async {
-    // if (!rcvd) {
+  Future<List<List>> getWfPriorities() async {
     String url = '${IpProvider.ip}api/Lookups/WfPriorities';
     var response = await http.get(
       Uri.parse(url),
@@ -29,24 +28,23 @@ class LaunchInDocProv with ChangeNotifier {
     var rcvdPriorities = res['Result'];
 
     List<String> priorities = [];
+    List<int> priorityId = [];
 
-    if (LanguageProvider.appLocale == const Locale('ar')) {
-      for (int i = 0; i < rcvdPriorities.length; i++) {
-        priorities.add(rcvdPriorities[i]['Desc']);
-      }
-    } else {
-      // print('here');
-      for (int i = 0; i < rcvdPriorities.length; i++) {
-        priorities.add(rcvdPriorities[i]['DescEn']);
-      }
+    String desc = "Desc";
+    if (LanguageProvider.appLocale == const Locale('en')) desc = "DescEn";
+
+    for (int i = 0; i < rcvdPriorities.length; i++) {
+      priorities.add(rcvdPriorities[i][desc]);
+      priorityId.add(rcvdPriorities[i]["ID"]);
     }
 
-    // print(priorities);
-
-    return priorities;
+    List<List> prioritiess = [];
+    prioritiess.add(priorities);
+    prioritiess.add(priorityId);
+    return prioritiess;
   }
 
-  Future<List<String>> getWfActions() async {
+  Future<List<List>> getWfActions() async {
     // if (!rcvd) {
     String url = '${IpProvider.ip}api/Lookups/WfActionsAll';
     var response = await http.get(
@@ -60,128 +58,31 @@ class LaunchInDocProv with ChangeNotifier {
     var rcvdActions = res['Result'];
 
     List<String> actions = [];
+    List<int> actionIds = [];
+    String desc = "Desc";
 
-    if (LanguageProvider.appLocale == const Locale('ar')) {
-      for (int i = 0; i < rcvdActions.length; i++) {
-        actions.add(rcvdActions[i]['Desc']);
-      }
-    } else {
-      // print('here');
-      for (int i = 0; i < rcvdActions.length; i++) {
-        actions.add(rcvdActions[i]['DescEn']);
-      }
+    if (LanguageProvider.appLocale == const Locale('en')) desc = "DescEn";
+
+    // if (LanguageProvider.appLocale == const Locale('ar')) {
+    //   for (int i = 0; i < rcvdActions.length; i++) {
+    //     actions.add(rcvdActions[i]['Desc']);
+    //   }
+    // } else {
+    //   for (int i = 0; i < rcvdActions.length; i++) {
+    //     actions.add(rcvdActions[i]['DescEn']);
+    //   }
+    // }
+
+    for (int i = 0; i < rcvdActions.length; i++) {
+      actions.add(rcvdActions[i][desc]);
+      actionIds.add(rcvdActions[i]["ID"]);
     }
 
-    return actions;
+    List<List> actionss = [];
+    actionss.add(actions);
+    actionss.add(actionIds);
+    return actionss;
   }
-
-  // Future<List<String>> getEmployees(String text) async {
-  //   // if (!rcvd) {
-
-  //   String url = '${IpProvider.ip}api/WFLaunch/SearchEmployees';
-  //   // print('called in prov');
-  //   var response = await http.post(
-  //     Uri.parse(url),
-  //     headers: {
-  //       'Authorization': 'Bearer $accessToken',
-  //     },
-  //     body: {
-  //       'UserID': '$uID',
-  //       'SearchTerm': text,
-  //     },
-  //   );
-
-  //   List<String> users = [];
-
-  //   String primName = "Name";
-  //   String secName = "NameEn";
-  //   var res = await json.decode(response.body);
-  //   if (res.containsKey('Result')) {
-  //     var rcvdUsers = res['Result']['result'];
-
-  //     if (LanguageProvider.appLocale == const Locale('en')) {
-  //       primName = "NameEn";
-  //       secName = "Name";
-  //     }
-
-  //     for (int i = 0; i < rcvdUsers.length; i++) {
-  //       // users.add(rcvdUsers[i]['Name']);
-  //       // rcvdUsers[i]['Name'] == null ? users.add(rcvdUsers[i]['NameEn']) : users.add(rcvdUsers[i]['Name']);
-  //       users.add(rcvdUsers[i][primName] ?? rcvdUsers[i][secName]);
-  //     }
-  //   }
-  //   return users;
-  // }
-
-  // ************************************************** //
-  // ************************************************** //
-  // ************************************************** //
-
-  // Future<List<Map<String, dynamic>>> getEmployees(String text) async {
-  //   // if (!rcvd) {
-
-  //   String url = '${IpProvider.ip}api/WFLaunch/SearchEmployees';
-  //   // print('called in prov');
-  //   var response = await http.post(
-  //     Uri.parse(url),
-  //     headers: {
-  //       'Authorization': 'Bearer $accessToken',
-  //     },
-  //     body: {
-  //       'UserID': '$uID',
-  //       'SearchTerm': text,
-  //     },
-  //   );
-
-  //   // List<Map<String, dynamic>> users = [];
-  //   List<Map<String, dynamic>> users = [];
-  //   var res = await json.decode(response.body);
-  //   if (res.containsKey('Result')) {
-  //     var rcvdActions = res['Result']['result'];
-
-  //     // List<String> users = [];
-
-  //     print('here');
-
-  //     if (LanguageProvider.appLocale == const Locale('ar')) {
-  //       for (int i = 0; i < rcvdActions.length; i++) {
-  //         // users.add(rcvdActions[i]['Name']);
-  //         // rcvdActions[i]['Name'] == null ? users.add(rcvdActions[i]['NameEn']) : users.add(rcvdActions[i]['Name']);
-  //         users.add(
-  //           {
-  //             "label": rcvdActions[i]['Name'] ?? rcvdActions[i]['NameEn'],
-  //             "value": rcvdActions[i]['Name'] ?? rcvdActions[i]['NameEn'],
-  //           },
-  //         );
-  //       }
-  //     } else {
-  //       // print('here');
-  //       for (int i = 0; i < rcvdActions.length; i++) {
-  //         // users.add(rcvdActions[i]['NameEn']);
-  //         // users.add(rcvdActions[i]['NameEn'] ?? rcvdActions[i]['Name']);     label
-  //         users.add(
-  //           {
-  //             "label": rcvdActions[i]['NameEn'] ?? rcvdActions[i]['Name'],
-  //             "value": rcvdActions[i]['NameEn'] ?? rcvdActions[i]['Name'],
-  //           },
-  //         );
-  //       }
-  //     }
-  //   }
-
-  //   print('returning');
-  //   return users;
-
-  //   // return [
-  //   //   "p8admin المشرف العام",
-  //   //   "husam",
-  //   //   "Nada",
-  //   // ];
-  // }
-
-  // ************************************************** //
-  // ************************************************** //
-  // ************************************************** //
 
   Future<List<String>> getEmployees(String text) async {
     // if (!rcvd) {
@@ -215,30 +116,129 @@ class LaunchInDocProv with ChangeNotifier {
       }
       for (int i = 0; i < rcvdUsers.length; i++) {
         String n = rcvdUsers[i][primName] ?? rcvdUsers[i][secName];
-        users.add( n + "   i" + rcvdUsers[i]['UserID'].toString() );
-        // users.add(
-        //   {
-        //     "UserID": rcvdUsers[i]['UserID'],
-        //     "name": rcvdUsers[i][primName] ?? rcvdUsers[i][secName],
-        //   },
-        // );
+        users.add(n + "   i" + rcvdUsers[i]['UserID'].toString());
       }
-      // for (int i = 0; i < rcvdUsers.length; i++) {
-      //   users2[0].add(
-      //     {
-      //       "UserID": rcvdUsers[i]['UserID'],
-      //     },
-      //   );
-      //   users2[1].add(
-      //     {
-      //       "Name": rcvdUsers[i][primName] ?? rcvdUsers[i][secName],
-      //     },
-      //   );
-      // }
+    }
+    return users;
+  }
+
+  Future<dynamic> uploadFileAndGetItsData(List<String> files) async {
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('${IpProvider.ip}api/Common/PostFiles'));
+    request.headers.addAll({"Authorization": "Bearer $accessToken"});
+    for (int i = 0; i < files.length; i++) {
+      request.files.add(await http.MultipartFile.fromPath("", files[i]));
     }
 
-    print('returning');
-    return users;
-    // return users2;
+    var response = await request.send();
+    var responsed = await http.Response.fromStream(response);
+    final res = json.decode(responsed.body);
+
+    print(res);
+    return res["Result"];
+  }
+
+  Future<bool> launchWorkflow(Map<String, dynamic> wfData) async {
+    // print("**** LAUNCHING WORKFLOW ****");
+
+    String url = '${IpProvider.ip}api/WFLaunch/Launch';
+
+    List<Map<String,dynamic>> launchDataItemss = [
+      {   //    <String, dynamic>
+        "Subject": wfData["Subject"],
+        "PriorityID": '${wfData["PrioID"]}' ,         //      '${wfData["PrioID"]}'       wfData["PrioID"],  
+        "WfEndDate": wfData["WfEndD"],
+        "Attachs": [
+          {"Files": wfData["filessss"]}
+        ],
+        "RecentlySignedDocVSIDs": [""],
+      }
+    ];
+
+    // print("created launchDataItemss");
+
+    // Map finalOB = {   //    <String, dynamic>
+    //   "WFAction": '${wfData["actID"]}',
+    //   "LaunchDataItems": launchDataItemss,
+    //   "LaunchToUsers": wfData["LaunchToUsers"],
+    //   "UserID": '$uID'
+    // };
+
+    // String encodedOb = json.encode(finalOB);
+    // print(encodedOb);
+
+    // final jsonEncodeer = JsonEncoder();
+    // String encodedOb = jsonEncodeer.convert(finalOB);
+    // print(encodedOb);
+
+    print({                                            //    <String, dynamic>
+        "WFAction": '${wfData["actID"]}',             //    '${wfData["actID"]}'
+        "LaunchDataItems": launchDataItemss,
+        "LaunchToUsers": wfData["LaunchToUsers"],
+        "UserID": '$uID'      //    '$uID'
+      });
+    
+
+    var response = await http.post(
+      Uri.parse(url),
+      headers: <String,String>{    //    <String, String>
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json; charset=UTF-8',
+        // 'Content-Type': 'application/json',       //    multipart/form-data
+        // 'Accept': '*/*'
+      },
+
+      // body: json.encode({                                            //    <String, dynamic>
+      //   "WFAction": '${wfData["actID"]}',
+      //   "LaunchDataItems": launchDataItemss,
+      //   "LaunchToUsers": wfData["LaunchToUsers"],
+      //   "UserID": '$uID'
+      // }),
+
+      
+
+      body: jsonEncode(<String,dynamic>{                                            //    <String, dynamic>
+        "WFAction": '${wfData["actID"]}',             //    '${wfData["actID"]}'
+        "LaunchDataItems": launchDataItemss,
+        "LaunchToUsers": wfData["LaunchToUsers"],
+        "UserID": '$uID'      //    '$uID'
+      }),
+      
+      // body: <String, dynamic>{
+      //   "WFAction": '${wfData["actID"]}',
+      //   "LaunchDataItems": launchDataItemss,
+      //   "LaunchToUsers": wfData["LaunchToUsers"],
+      //   "UserID": '$uID'
+      // },
+
+      // body: finalOB.toString(),
+
+      // body: jsonEncodeer.convert(finalOB),
+
+      // body: finalOB,
+
+      // body: json.encode(finalOB),
+
+      // body: encodedOb,
+    );
+
+    // print("Decoding Response");
+    var res = await json.decode(response.body);
+    // print("Response:");
+    print(res);
+
+    return res["Success"];
+
+    // if(res["Success"]) return "Success";
+    // else return "Failed";
+
+    // bool a = res['Success'];
+
+    // if(a) {
+    //   print("Success Success Success Success");
+    // }
+    // else{
+    //   print(res['Message']);
+    // }
   }
 }
