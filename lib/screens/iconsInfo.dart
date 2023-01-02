@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/languageProvider.dart';
+import '../providers/widgetDataProvider.dart';
 
 import '../widgets/main_drawer.dart';
 import '../widgets/changeLangButton.dart';
 
 class IconInfo extends StatelessWidget {
-  // const IconInfo({super.key});
   static const routeName = '/iconinfo';
 
   final double padding = 12;
-
   final double headingSize = 15;
   final double bodySize = 12;
   final double marginTop = 5;
-  // Locale myLocale = Localizations.localeOf(context);
-
-  
-  
+  List<String> dess = WidgetDataProvider.getIconsDes();
 
   @override
   Widget build(BuildContext context) {
@@ -29,72 +26,7 @@ class IconInfo extends StatelessWidget {
         MediaQuery.of(context).padding.bottom;
     var mWidth = mSize.width;
 
-    const double iconSize = 25;
-    List<Widget> iconss = [
-    Icon(
-      Icons.noise_control_off,
-      color: Theme.of(context).primaryColor,
-      size: iconSize,
-    ),
-    Icon(
-      Icons.pending,
-      color: Theme.of(context).primaryColor,
-      size: iconSize,
-    ),
-    Icon(
-      Icons.arrow_circle_right,
-      color: Theme.of(context).primaryColor,
-      size: iconSize,
-    ),
-    Icon(
-      Icons.check_box,
-      color: Colors.green,
-      size: iconSize,
-    ),
-    Icon(
-      Icons.arrow_circle_left,
-      color: Colors.green,
-      size: iconSize,
-    ),
-    Icon(
-      Icons.archive,
-      color: Colors.red,
-      size: iconSize,
-    ),
-    Icon(
-      Icons.cancel_rounded,
-      color: Colors.red,
-      size: iconSize,
-    ),
-    Icon(
-      Icons.double_arrow,
-      color: Theme.of(context).primaryColor,
-      size: iconSize,
-    ),
-  ];
-
-    List<String> dess =
-        Provider.of<LanguageProvider>(context, listen: false).isEng
-            ? [
-                'Unopened Mail',
-                'Opened Mail',
-                'Forwarded Mail',
-                'Completed Mail',
-                'Returned Mail',
-                'Archived Mail',
-                'Cancelled Mail',
-                'Reforwarded Mail'
-              ]
-            : [
-                'بريد غير مفتوح',
-                'فتح البريد',
-                'البريد المعاد توجيهه',
-                'البريد المكتمل',
-                'بريد عاد',
-                'البريد المؤرشف',
-                'البريد الملغى',
-                'البريد المعاد توجيهه'
-              ];
+    List<Widget> iconss = WidgetDataProvider.getIcons(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -130,8 +62,7 @@ class IconInfo extends StatelessWidget {
                 ),
               ),
               Table(
-                border: TableBorder.all(
-                    color: Theme.of(context).primaryColor, width: 2.5
+                border: TableBorder.all(color: Theme.of(context).primaryColor, width: 2.5
                     // borderRadius: BorderRadius.all(Radius),
                     ),
                 columnWidths: const {

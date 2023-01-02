@@ -51,10 +51,8 @@ class _LoginState extends State<Login> {
       spin = 1;
     });
 
-    Socket.connect('10.0.190.191', 50, timeout: Duration(seconds: 2))
-        .then((socket) async {
-      String res =
-          await Provider.of<Auth>(context, listen: false).login(name, pass);
+    Socket.connect('10.0.190.191', 50, timeout: Duration(seconds: 2)).then((socket) async {
+      String res = await Provider.of<Auth>(context, listen: false).login(name, pass);
 
       setState(() {
         spin = 0;
@@ -229,13 +227,13 @@ class _LoginState extends State<Login> {
                                     cursorColor: Theme.of(context).primaryColor,
                                     onChanged: (val) => {name = val},
                                     decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Theme.of(context).backgroundColor,
                                       labelText: AppLocalizations.of(context)!.username,
                                       // hintText: 'sdsd',
                                       border: UnderlineInputBorder(),
                                       focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color:
-                                                Theme.of(context).primaryColor),
+                                        borderSide: BorderSide(color: Theme.of(context).primaryColor),
                                       ),
                                       // labelText: 'Enter Name',
                                       // hintText: 'Enter Your Name',
@@ -260,22 +258,20 @@ class _LoginState extends State<Login> {
                                         // print('onSubmitted2 executed');
                                         _submit();
                                       },
-                                      cursorColor:
-                                          Theme.of(context).primaryColor,
+                                      cursorColor: Theme.of(context).primaryColor,
                                       onTap: _clear,
                                       focusNode: _focusP,
                                       textInputAction: TextInputAction.send,
                                       obscureText: true,
                                       onChanged: (val) => {pass = val},
                                       decoration: InputDecoration(
-                                        // labelText: AppLocalizations.of(context)!.password,
+                                        filled: true,
+                                        fillColor: Theme.of(context).backgroundColor,
                                         labelText: AppLocalizations.of(context)!.password,
                                         // fillColor: Theme.of(context).primaryColor,
                                         border: const UnderlineInputBorder(),
                                         focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .primaryColor),
+                                          borderSide: BorderSide(color: Theme.of(context).primaryColor),
                                         ),
                                         // iconColor: Theme.of(context).primaryColor,
                                       ),
@@ -355,15 +351,12 @@ class _LoginState extends State<Login> {
                                   Container(
                                     height: mHeight * 0.08,
                                     width: double.infinity,
-                                    margin: const EdgeInsets.only(
-                                        top: 10, bottom: 20),
+                                    margin: const EdgeInsets.only(top: 10, bottom: 20),
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            Theme.of(context).primaryColor,
+                                        backgroundColor: Theme.of(context).primaryColor,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
+                                          borderRadius: BorderRadius.circular(30),
                                         ),
                                       ),
                                       // onPressed: _submit,
@@ -393,8 +386,7 @@ class _LoginState extends State<Login> {
                                   Center(
                                     child: spin != 0
                                         ? CircularProgressIndicator(
-                                            color:
-                                                Theme.of(context).primaryColor,
+                                            color: Theme.of(context).primaryColor,
                                           )
                                         : null,
                                   ),

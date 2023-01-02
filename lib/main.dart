@@ -13,6 +13,7 @@ import './screens/iconsInfo.dart';
 // import './screens/fileViewer.dart';
 
 import './providers/auth.dart';
+import './providers/requestDataProvider.dart';
 import './providers/dashboardPro.dart';
 import './providers/inboxPro.dart';
 import 'providers/inboxFilterPro.dart';
@@ -21,6 +22,7 @@ import './providers/archivedPro.dart';
 import './providers/fileProvider.dart';
 import './providers/languageProvider.dart';
 import './providers/launchInDocProv.dart';
+import './providers/forwardWfPro.dart';
 
 void main() {
   runApp(const MyApp());
@@ -50,32 +52,34 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProxyProvider<Auth, DashboardPro>(
           create: (ctx) => DashboardPro('', 0),
-          update: (_, auth, data) =>
-              DashboardPro(auth.accessToken, auth.userID),
+          update: (_, auth, data) => DashboardPro(Auth.accessToken, auth.userID),
         ),
         ChangeNotifierProvider.value(
           value: InFilterProvider(),
         ),
         ChangeNotifierProxyProvider<Auth, InboxPro>(
           create: (ctx) => InboxPro('', 0),
-          update: (_, auth, data) => InboxPro(auth.accessToken, auth.userID),
+          update: (_, auth, data) => InboxPro(Auth.accessToken, auth.userID),
         ),
         ChangeNotifierProxyProvider<Auth, OutboxPro>(
           create: (ctx) => OutboxPro('', 0),
-          update: (_, auth, data) => OutboxPro(auth.accessToken, auth.userID),
+          update: (_, auth, data) => OutboxPro(Auth.accessToken, auth.userID),
         ),
         ChangeNotifierProxyProvider<Auth, ArchivedPro>(
           create: (ctx) => ArchivedPro('', 0),
-          update: (_, auth, data) => ArchivedPro(auth.accessToken, auth.userID),
+          update: (_, auth, data) => ArchivedPro(Auth.accessToken, auth.userID),
         ),
         ChangeNotifierProxyProvider<Auth, FileProvider>(
           create: (ctx) => FileProvider('', 0),
-          update: (_, auth, data) =>
-              FileProvider(auth.accessToken, auth.userID),
+          update: (_, auth, data) => FileProvider(Auth.accessToken, auth.userID),
         ),
         ChangeNotifierProxyProvider<Auth, LaunchInDocProv>(
           create: (ctx) => LaunchInDocProv('', 0),
-          update: (_, auth, data) => LaunchInDocProv(auth.accessToken, auth.userID),
+          update: (_, auth, data) => LaunchInDocProv(Auth.accessToken, auth.userID),
+        ),
+        ChangeNotifierProxyProvider<Auth, ForwardWfPro>(
+          create: (ctx) => ForwardWfPro('', 0),
+          update: (_, auth, data) => ForwardWfPro(Auth.accessToken, auth.userID),
         ),
       ],
       child: Consumer2<Auth, LanguageProvider>(

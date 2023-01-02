@@ -2,38 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import './languageProvider.dart';
-import './ipProvider.dart';
+import 'requestDataProvider.dart';
 import 'inboxFilterPro.dart';
 
 class InboxPro with ChangeNotifier {
   String accessToken;
   int uID;
-  // bool filter;
 
   InboxPro(this.accessToken, this.uID);
-  // InboxPro(this.accessToken, this.uID, this.filter);
 
   var ibx;
   bool rcvd = false;
 
   Future<List<Map>> getDashboardInbox() async {
     if (!rcvd) {
-      String url = '${IpProvider.ip}api/Dashboard/UserInbox?UserID=$uID';
+      String url = '${RequestDataProvider.ip}api/Dashboard/UserInbox?UserID=$uID';
       var response = await http.get(
         Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-        },
+        headers: RequestDataProvider.authHeader,
       );
-
       var res = await json.decode(response.body);
-
-      // List<Map> ibx = res['Result']['Data'];
       ibx = res['Result']['Data'];
       rcvd = true;
     }
-
-    // print('******* allocated received list *******');
 
     List<Map> setInbox = [];
 
@@ -52,34 +43,27 @@ class InboxPro with ChangeNotifier {
   }
 
   Future<List<Map>> getFullInbox() async {
-    String url = '${IpProvider.ip}api/WFInbox/GetWfinbox';
-    var response;
+    String url = '${RequestDataProvider.ip}api/WFInbox/GetWfinbox';
+
+    var body = {
+      'UserID': '$uID',
+    };
 
     if (InFilterProvider.filter) {
-      response = await http.post(
-        Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-        },
-        body: {
-          'UserID': '$uID',
-          'RequisitionNo': InFilterProvider.reqNo,
-          'Subject': InFilterProvider.subject,
-          'IDateFrom': InFilterProvider.startDate,
-          'IDateTo': InFilterProvider.endDate
-        },
-      );
-    } else {
-      response = await http.post(
-        Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-        },
-        body: {
-          'UserID': '$uID',         //      '$uID'
-        },
-      );
+      body = {
+        'UserID': '$uID',
+        'RequisitionNo': InFilterProvider.reqNo,
+        'Subject': InFilterProvider.subject,
+        'IDateFrom': InFilterProvider.startDate,
+        'IDateTo': InFilterProvider.endDate
+      };
     }
+
+    var response = await http.post(
+      Uri.parse(url),
+      headers: RequestDataProvider.authHeader,
+      body: body,
+    );
 
     var res = await json.decode(response.body);
     ibx = res['Result']['Data'];
@@ -95,65 +79,40 @@ class InboxPro with ChangeNotifier {
       } else {
         beginDate = comparer[0];
       }
-      if (LanguageProvider.appLocale == const Locale('ar')) {
-        String searchString = ibx[i]['Sender'] == null ? '' : ibx[i]['Sender'];
-        if (ibx[i]['SUBJECT'] != null) {
-          searchString += ' ' + ibx[i]['SUBJECT'];
-        }
-        if (ibx[i]['RequisitionNo'] != null) {
-          searchString += ' ' + ibx[i]['RequisitionNo'];
-        }
-        setInbox.add(
-          {
-            "Sender": ibx[i]['Sender'],
-            "WFBeginDate": beginDate,
-            "SUBJECT": ibx[i]['SUBJECT'],
-            "StatusID": ibx[i]['StatusID'],
-            "RequisitionNo": ibx[i]['RequisitionNo'],
-            //
-            "isChecked": false, //declaring by self to enable checkBoxes
-            //
-            "DETID": ibx[i]['DETID'], //primary key
-            //
-            "EnableTransfer": ibx[i]['EnableTransfer'],
-            "EnableStartNewWF": ibx[i]['EnableStartNewWF'],
-            "EnableCompleteTask": ibx[i]['EnableCompleteTask'],
-            "EnableAddNotes": ibx[i]['EnableAddNotes'],
-            //
-            "searchString": searchString
-          },
-        );
-      } else {
-        String searchString =
-            ibx[i]['SenderEn'] == null ? '' : ibx[i]['SenderEn'];
-        if (ibx[i]['SUBJECT'] != null) {
-          searchString += ' ' + ibx[i]['SUBJECT'];
-        }
-        if (ibx[i]['RequisitionNo'] != null) {
-          searchString += ' ' + ibx[i]['RequisitionNo'];
-        }
 
-        setInbox.add(
-          {
-            "Sender": ibx[i]['SenderEn'],
-            "WFBeginDate": beginDate,
-            "SUBJECT": ibx[i]['SUBJECT'],
-            "StatusID": ibx[i]['StatusID'],
-            "RequisitionNo": ibx[i]['RequisitionNo'],
-            //
-            "isChecked": false, //declaring by self to enable checkBoxes
-            //
-            "DETID": ibx[i]['DETID'], //primary key
-            //
-            "EnableTransfer": ibx[i]['EnableTransfer'],
-            "EnableStartNewWF": ibx[i]['EnableStartNewWF'],
-            "EnableCompleteTask": ibx[i]['EnableCompleteTask'],
-            "EnableAddNotes": ibx[i]['EnableAddNotes'],
-            //
-            "searchString": searchString
-          },
-        );
+      String primarySender = "Sender";
+      String secondarySender = "SenderEn";
+
+      if (LanguageProvider.appLocale == Locale('en')) {
+        primarySender = "SenderEn";
+        secondarySender = "Sender";
       }
+
+      String searchString = ibx[i][primarySender] ?? ibx[i][secondarySender];
+      searchString += ' ' + ibx[i]['SUBJECT'];
+      searchString += ' ' + (ibx[i]['RequisitionNo'] ?? "");
+
+      setInbox.add(
+        {
+          "Sender": ibx[i][primarySender] ?? ibx[i][secondarySender],
+          "WFBeginDate": beginDate,
+          "SUBJECT": ibx[i]['SUBJECT'],
+          "StatusID": ibx[i]['StatusID'],
+          "RequisitionNo": ibx[i]['RequisitionNo'],
+          //
+          "isChecked": false, //declaring by self to enable checkBoxes
+          //
+          "DETID": ibx[i]['DETID'], //primary key
+          "ActionID": ibx[i]['ActionID'],
+          //
+          "EnableTransfer": ibx[i]['EnableTransfer'],
+          "EnableStartNewWF": ibx[i]['EnableStartNewWF'],
+          "EnableCompleteTask": ibx[i]['EnableCompleteTask'],
+          "EnableAddNotes": ibx[i]['EnableAddNotes'],
+          //
+          "searchString": searchString
+        },
+      );
     }
 
     return setInbox;

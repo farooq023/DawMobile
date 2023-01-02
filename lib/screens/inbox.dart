@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-// import '../providers/auth.dart';
 import '../providers/inboxPro.dart';
+import '../providers/widgetDataProvider.dart';
 
 // import './fileViewer.dart';
 import './vsidList.dart';
@@ -14,6 +14,7 @@ import '../widgets/main_drawer.dart';
 import '../widgets/changeLangButton.dart';
 import '../widgets/searchFilterIn.dart';
 import '../widgets/launchInDoc.dart';
+import '../widgets/forwardWf.dart';
 
 // import '../widgets/inboxTile.dart';
 
@@ -27,17 +28,16 @@ class Inbox extends StatefulWidget {
 }
 
 class _InboxState extends State<Inbox> {
+  bool _received = false;
+
   List<Map> _rcvdInbox = [];
   List<Map> _setInbox = [];
-  bool _received = false;
   int _selection = 0;
   List<double> selectedDetIds = [];
   String searchText = '';
   var focusS = FocusNode();
 
   final GlobalKey btnKey = GlobalKey();
-  // double bx = 0 , by = 0 ;
-
   int _falseForwards = 0, _falseNewWF = 0, _falseCompletes = 0, _falseNotes = 0;
 
   @override
@@ -46,8 +46,7 @@ class _InboxState extends State<Inbox> {
   }
 
   void callProviders() async {
-    _rcvdInbox =
-        await Provider.of<InboxPro>(context, listen: false).getFullInbox();
+    _rcvdInbox = await Provider.of<InboxPro>(context, listen: false).getFullInbox();
     _setInbox = _rcvdInbox;
     _received = true;
 
@@ -90,51 +89,10 @@ class _InboxState extends State<Inbox> {
     final mSize = MediaQuery.of(context).size;
     final mHeight = mSize.height;
     final mWidth = mSize.width;
-    const double iconSize = 25;
-    List<Widget> iconsList = [
-      Icon(
-        Icons.noise_control_off,
-        color: Theme.of(context).primaryColor,
-        size: iconSize,
-      ),
-      Icon(
-        Icons.pending,
-        color: Theme.of(context).primaryColor,
-        size: iconSize,
-      ),
-      Icon(
-        Icons.arrow_circle_right,
-        color: Theme.of(context).primaryColor,
-        size: iconSize,
-      ),
-      Icon(
-        Icons.check_box,
-        color: Colors.green,
-        size: iconSize,
-      ),
-      Icon(
-        Icons.arrow_circle_left,
-        color: Colors.green,
-        size: iconSize,
-      ),
-      Icon(
-        Icons.archive,
-        color: Colors.red,
-        size: iconSize,
-      ),
-      Icon(
-        Icons.cancel_rounded,
-        color: Colors.red,
-        size: iconSize,
-      ),
-      Icon(
-        Icons.double_arrow,
-        color: Theme.of(context).primaryColor,
-        size: iconSize,
-      ),
-    ];
 
-    void LaunchInModal() {
+    List<Widget> iconsList = WidgetDataProvider.getIcons(context);
+
+    void launchInModal() {
       showModalBottomSheet(
         // showDialog // showModalBottomSheet // showGeneralDialog
         isScrollControlled: true,
@@ -145,16 +103,16 @@ class _InboxState extends State<Inbox> {
       );
     }
 
-    // void modal() {
-    //   showModalBottomSheet(
-    //     // showDialog // showModalBottomSheet // showGeneralDialog
-    //     isScrollControlled: true,
-    //     context: context,
-    //     builder: (_) {
-    //       return LaunchInDoc();
-    //     },
-    //   );
-    // }
+    void forwardWfModal() {
+      showModalBottomSheet(
+        // showDialog // showModalBottomSheet // showGeneralDialog
+        isScrollControlled: true,
+        context: context,
+        builder: (_) {
+          return ForwardWf(selectedDetIds);
+        },
+      );
+    }
 
     void searchModal() {
       showModalBottomSheet(
@@ -250,7 +208,6 @@ class _InboxState extends State<Inbox> {
                       ),
                     ),
                   ),
-                  value: '/hello',
                 ),
                 PopupMenuItem(
                   child: ElevatedButton(
@@ -260,7 +217,7 @@ class _InboxState extends State<Inbox> {
                       // state.close();
                       // btnKey.currentState = !btnKey.currentState;
                       // print(btnKey.currentState);
-                      LaunchInModal();
+                      launchInModal();
                     },
                     child: Icon(Icons.note_alt_outlined),
                     style: ElevatedButton.styleFrom(
@@ -269,7 +226,6 @@ class _InboxState extends State<Inbox> {
                       backgroundColor: Theme.of(context).primaryColor,
                     ),
                   ),
-                  value: '/about',
                 ),
               ];
             },
@@ -291,8 +247,7 @@ class _InboxState extends State<Inbox> {
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: AppLocalizations.of(context)!.search,
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 10),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 10),
                           ),
                           textInputAction: TextInputAction.search,
                         ),
@@ -358,15 +313,12 @@ class _InboxState extends State<Inbox> {
                                                   child: Icon(
                                                     Icons.account_circle,
                                                     size: 48,
-                                                    color: Theme.of(context)
-                                                        .primaryColor,
+                                                    color: Theme.of(context).primaryColor,
                                                   ),
                                                 ),
                                                 Align(
                                                   alignment: Alignment.center,
-                                                  child: iconsList[_setInbox[i]
-                                                          ['StatusID'] -
-                                                      1],
+                                                  child: iconsList[_setInbox[i]['StatusID'] - 1],
                                                 ),
                                               ],
                                             ),
@@ -381,13 +333,10 @@ class _InboxState extends State<Inbox> {
                                             // width: mWidth * 0.782,
                                             width: mWidth * 0.81,
                                             child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     Container(
                                                       width: mWidth * 0.45,
@@ -398,8 +347,7 @@ class _InboxState extends State<Inbox> {
                                                           //     Theme.of(context)
                                                           //         .primaryColor,
                                                           fontSize: 22,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                           // color: Colors.blue,
                                                         ),
                                                         maxLines: 1,
@@ -408,9 +356,7 @@ class _InboxState extends State<Inbox> {
                                                     Container(
                                                       width: mWidth * 0.25,
                                                       child: Align(
-                                                        alignment:
-                                                            const Alignment(
-                                                                1, 0),
+                                                        alignment: const Alignment(1, 0),
                                                         child: Text(
                                                           "${_setInbox[i]['WFBeginDate']}",
                                                           style: const TextStyle(
@@ -480,8 +426,6 @@ class _InboxState extends State<Inbox> {
                                 ],
                               ),
                       ),
-
-                      // ),
                     ],
                   )
                 :
@@ -493,24 +437,14 @@ class _InboxState extends State<Inbox> {
                     itemBuilder: (BuildContext ctxt, int i) {
                       return CheckboxListTile(
                         title: Container(
-                          height: mHeight * 0.17,
-                          // padding: const EdgeInsets.all(6),
-                          // color: ,
+                          height: mHeight * 0.135,
                           child: Container(
-                            // decoration: BoxDecoration(
-                            //   border: Border.all(
-                            //     color: Colors.black,
-                            //     width: 2,
-                            //   ),
-                            // ),
-                            // width: mWidth * 0.782,
                             width: mWidth * 0.81,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Container(
                                       width: mWidth * 0.45,
@@ -520,7 +454,6 @@ class _InboxState extends State<Inbox> {
                                           fontSize: 22,
                                           fontWeight: FontWeight.bold,
                                           color: Theme.of(context).primaryColor,
-                                          // color: Colors.blue,
                                         ),
                                         maxLines: 1,
                                       ),
@@ -533,10 +466,7 @@ class _InboxState extends State<Inbox> {
                                           "${_setInbox[i]['WFBeginDate']}",
                                           style: TextStyle(
                                             fontSize: 15,
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            // fontWeight: FontWeight.bold,
-                                            // color: Colors.blue,
+                                            color: Theme.of(context).primaryColor,
                                           ),
                                           maxLines: 1,
                                         ),
@@ -550,7 +480,7 @@ class _InboxState extends State<Inbox> {
                                     "${_setInbox[i]['SUBJECT']}",
                                     style: TextStyle(
                                       fontSize: 18,
-                                      // color: Theme.of(context).primaryColor,
+                                      color: Theme.of(context).primaryColor,
                                       // color: Colors.blue,
                                     ),
                                     maxLines: 1,
@@ -580,33 +510,32 @@ class _InboxState extends State<Inbox> {
                           setState(
                             () {
                               _setInbox[i]['isChecked'] = value!;
-                              if (selectedDetIds
-                                  .contains(_setInbox[i]['DETID'])) {
+                              if (selectedDetIds.contains(_setInbox[i]['DETID'])) {
                                 selectedDetIds.remove(_setInbox[i]['DETID']);
-                                if (_setInbox[i]['_falseForwards'] == false) {
+                                if (_setInbox[i]['EnableTransfer'] == false || _setInbox[i]['ActionID'] == 4) {
                                   _falseForwards--;
                                 }
-                                if (_setInbox[i]['_falseNewWF'] == false) {
+                                if (_setInbox[i]['EnableStartNewWF'] == false) {
                                   _falseNewWF--;
                                 }
-                                if (_setInbox[i]['_falseCompletes'] == false) {
+                                if (_setInbox[i]['EnableCompleteTask'] == false) {
                                   _falseCompletes--;
                                 }
-                                if (_setInbox[i]['_falseNotes'] == false) {
+                                if (_setInbox[i]['EnableAddNotes'] == false) {
                                   _falseNotes--;
                                 }
                               } else {
                                 selectedDetIds.add(_setInbox[i]['DETID']);
-                                if (_setInbox[i]['_falseForwards'] == false) {
+                                if (_setInbox[i]['EnableTransfer'] == false || _setInbox[i]['ActionID'] == 4) {
                                   _falseForwards++;
                                 }
-                                if (_setInbox[i]['_falseNewWF'] == false) {
+                                if (_setInbox[i]['EnableStartNewWF'] == false) {
                                   _falseNewWF++;
                                 }
-                                if (_setInbox[i]['_falseCompletes'] == false) {
+                                if (_setInbox[i]['EnableCompleteTask'] == false) {
                                   _falseCompletes++;
                                 }
-                                if (_setInbox[i]['_falseNotes'] == false) {
+                                if (_setInbox[i]['EnableAddNotes'] == false) {
                                   _falseNotes++;
                                 }
                               }
@@ -633,12 +562,11 @@ class _InboxState extends State<Inbox> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.forward),
-                      onPressed:
-                          selectedDetIds.length > 0 && _falseForwards == 0
-                              ? () {
-                                  // print('pressed');
-                                }
-                              : null,
+                      onPressed: selectedDetIds.length > 0 && _falseForwards == 0
+                          ? () {
+                              forwardWfModal();
+                            }
+                          : null,
                     ),
                     IconButton(
                       icon: Icon(Icons.new_label),
@@ -650,12 +578,11 @@ class _InboxState extends State<Inbox> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.check_circle_rounded),
-                      onPressed:
-                          selectedDetIds.length == 1 && _falseCompletes == 0
-                              ? () {
-                                  // print('pressed');
-                                }
-                              : null,
+                      onPressed: selectedDetIds.length == 1 && _falseCompletes == 0
+                          ? () {
+                              // print('pressed');
+                            }
+                          : null,
                     ),
                     IconButton(
                       icon: const Icon(Icons.note_add),

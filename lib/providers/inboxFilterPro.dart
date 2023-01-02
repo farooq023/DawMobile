@@ -7,11 +7,7 @@ class InFilterProvider with ChangeNotifier {
   static String startDate = '';
   static String endDate = '';
 
-  void setFilterToTrue(String req, String sub, String sDate, String eDate){
-    // if(filter && req == '' && sub == '' && sDate == '' && eDate == ''){
-    //   filter = false;
-    //   return;
-    // }
+  void setFilterToTrue(String req, String sub, String sDate, String eDate) {
     filter = true;
     reqNo = req;
     subject = sub;
@@ -19,7 +15,7 @@ class InFilterProvider with ChangeNotifier {
     endDate = eDate;
   }
 
-  static void setFilterToFalse(){
+  static void setFilterToFalse() {
     filter = false;
     reqNo = '';
     subject = '';

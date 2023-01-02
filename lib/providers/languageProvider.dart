@@ -1,28 +1,23 @@
 import 'package:flutter/material.dart';
-import './ipProvider.dart';
+import 'requestDataProvider.dart';
 
 class LanguageProvider with ChangeNotifier {
   static Locale appLocale = const Locale('en');
 
-  // void getLocale(){
-  //   return this.appLocale;
-  // }
-
-  bool get isEng {
+  static bool get isEng {
     return appLocale == Locale('en');
   }
 
   void changeLanguage() {
     if (appLocale == const Locale("ar")) {
       appLocale = const Locale("en");
-    }
-    else {
+    } else {
       appLocale = const Locale("ar");
     }
     notifyListeners();
   }
-  
-  Locale getLang(){
+
+  Locale getLang() {
     return appLocale;
   }
 }

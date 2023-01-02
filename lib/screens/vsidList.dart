@@ -21,11 +21,8 @@ class VsIdList extends StatefulWidget {
 class _VsIdListState extends State<VsIdList> {
   dynamic vsids = [];
   bool received = false;
-  int currVsId = 0;
+  int vsIdIndex = 0;
   String url = '';
-
-  // final Completer<PDFViewController> _pdfViewController =
-  //     Completer<PDFViewController>();
 
   @override
   void initState() {
@@ -33,8 +30,7 @@ class _VsIdListState extends State<VsIdList> {
   }
 
   void callProviders() async {
-    vsids = await Provider.of<FileProvider>(context, listen: false)
-        .getVsIds(widget.detID);
+    vsids = await Provider.of<FileProvider>(context, listen: false).getVsIds(widget.detID);
     // print('rcvd from provider');
 
     received = true;
@@ -44,30 +40,23 @@ class _VsIdListState extends State<VsIdList> {
   }
 
   void fetchFileFromUrl() async {
-    setState(() { 
+    setState(() {
       url = '';
     });
-    url = await Provider.of<FileProvider>(context, listen: false)
-        .getFileUrl(widget.detID, vsids[currVsId]['vsID']);
-    print("URL");
-    print(url);
-    if(!url.endsWith(".pdf")){
-      print("adding .pdf");
-      url+=".pdf";
-    }
+    url = await Provider.of<FileProvider>(context, listen: false).getFileUrl(widget.detID, vsids[vsIdIndex]['vsID']);
     setState(() {});
   }
 
   void prevDoc() {
     setState(() {
-      currVsId--;
+      vsIdIndex--;
     });
     fetchFileFromUrl();
   }
 
   void nextDoc() {
     setState(() {
-      currVsId++;
+      vsIdIndex++;
     });
     fetchFileFromUrl();
   }
@@ -81,7 +70,7 @@ class _VsIdListState extends State<VsIdList> {
         MediaQuery.of(context).padding.bottom;
     var mWidth = mSize.width;
 
-    var gestureWidth = mWidth * 0.14;
+    // var gestureWidth = mWidth * 0.14;
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -111,7 +100,7 @@ class _VsIdListState extends State<VsIdList> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '${vsids[currVsId]['CorrspDesc']}',
+                            '${vsids[vsIdIndex]['CorrspDesc']}',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -123,16 +112,14 @@ class _VsIdListState extends State<VsIdList> {
                               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 IconButton(
-                                  onPressed: currVsId > 0 ? prevDoc : null,
+                                  onPressed: vsIdIndex > 0 ? prevDoc : null,
                                   icon: Icon(
                                     Icons.arrow_back_ios,
-                                    color: currVsId > 0
-                                        ? Theme.of(context).primaryColor
-                                        : null,
+                                    color: vsIdIndex > 0 ? Theme.of(context).primaryColor : null,
                                   ),
                                 ),
                                 Text(
-                                  '${currVsId + 1} / ${vsids.length}',
+                                  '${vsIdIndex + 1} / ${vsids.length}',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -140,14 +127,10 @@ class _VsIdListState extends State<VsIdList> {
                                   ),
                                 ),
                                 IconButton(
-                                  onPressed: currVsId + 1 == vsids.length
-                                      ? null
-                                      : nextDoc,
+                                  onPressed: vsIdIndex + 1 == vsids.length ? null : nextDoc,
                                   icon: Icon(
                                     Icons.arrow_forward_ios,
-                                    color: currVsId + 1 == vsids.length
-                                        ? null
-                                        : Theme.of(context).primaryColor,
+                                    color: vsIdIndex + 1 == vsids.length ? null : Theme.of(context).primaryColor,
                                   ),
                                 ),
                               ],
@@ -159,81 +142,53 @@ class _VsIdListState extends State<VsIdList> {
                     Container(
                       height: mHeight * 0.9,
                       width: double.infinity,
-                      // decoration: BoxDecoration(
-                      //   border: Border.all(
-                      //     color: Colors.black,
-                      //     width: 1,
-                      //   ),
-                      // ),
-                      // padding: const EdgeInsets.all(10),
                       child: Center(
                         child: url != ''
-                            ? Row(
-                                // mainAxisAlignment:
-                                //     MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    // height: double.infinity,
-                                    width: mWidth * 0.05,
-                                    // decoration: BoxDecoration(
-                                    //   border: Border.all(
-                                    //     color: Colors.black,
-                                    //     width: 1,
-                                    //   ),
-                                    // ),
-                                    child: FittedBox(
-                                      child: IconButton(
-                                        onPressed:
-                                            currVsId > 0 ? prevDoc : null,
-                                        icon: Icon(
-                                          Icons.arrow_back_ios,
-                                          color: currVsId > 0
-                                              ? Theme.of(context).primaryColor
-                                              : null,
-                                          size: 50,
+                            ? url != "error"
+                                ? Row(
+                                    children: [
+                                      Container(
+                                        width: mWidth * 0.05,
+                                        child: FittedBox(
+                                          child: IconButton(
+                                            onPressed: vsIdIndex > 0 ? prevDoc : null,
+                                            icon: Icon(
+                                              Icons.arrow_back_ios,
+                                              color: vsIdIndex > 0 ? Theme.of(context).primaryColor : null,
+                                              size: 50,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: mWidth * 0.9,
-                                    padding: const EdgeInsets.all(15),
-                                    child: const PDF(
-                                      autoSpacing: true,
-                                      fitEachPage: true,
-                                    ).fromUrl(
-                                      url,
-                                    ),
-                                  ),
-                                  Container(
-                                    width: mWidth * 0.05,
-                                    height: mHeight * 0.5,
-                                    // decoration: BoxDecoration(
-                                    //   border: Border.all(
-                                    //     color: Colors.red,
-                                    //     width: 1,
-                                    //   ),
-                                    // ),
-                                    // child: Text('/'),
-                                    child: FittedBox(
-                                      child: IconButton(
-                                        onPressed:
-                                            currVsId + 1 == vsids.length
-                                                ? null
-                                                : nextDoc,
-                                        icon: Icon(
-                                          Icons.arrow_forward_ios,
-                                          size: 50,
-                                          color: currVsId + 1 == vsids.length
-                                              ? null
-                                              : Theme.of(context)
-                                                  .primaryColor,
+                                      Container(
+                                        width: mWidth * 0.9,
+                                        padding: const EdgeInsets.all(15),
+                                        child: const PDF(
+                                          autoSpacing: true,
+                                          fitEachPage: true,
+                                        ).fromUrl(
+                                          url,
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              )
+                                      Container(
+                                        width: mWidth * 0.05,
+                                        height: mHeight * 0.5,
+                                        child: FittedBox(
+                                          child: IconButton(
+                                            onPressed: vsIdIndex + 1 == vsids.length ? null : nextDoc,
+                                            icon: Icon(
+                                              Icons.arrow_forward_ios,
+                                              size: 50,
+                                              color: vsIdIndex + 1 == vsids.length ? null : Theme.of(context).primaryColor,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : const Center(
+                                    child: Text("An errror occured while viewing file."),
+                                  )
                             : const CircularProgressIndicator(),
                       ),
                     )

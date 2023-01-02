@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
 import '../providers/dashboardPro.dart';
 import '../widgets/main_drawer.dart';
 
@@ -37,9 +36,7 @@ class _DashboardState extends State<Dashboard> {
     // await Provider.of<DashboardPro>(context, listen: false)
     //     .getUsername(context);
 
-    List<String> _totalMails =
-        await Provider.of<DashboardPro>(context, listen: false)
-            .getUserStats(context);
+    List<String> _totalMails = await Provider.of<DashboardPro>(context, listen: false).getUserStats(context);
 
     newM = _totalMails[0];
     recM = _totalMails[1];
@@ -106,9 +103,7 @@ class _DashboardState extends State<Dashboard> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         title: Text(AppLocalizations.of(context)!.dashboard),
-        actions: [
-          ChangeLang()
-        ],
+        actions: [ChangeLang()],
       ),
       drawer: const MainDrawer(),
       body: SafeArea(
@@ -130,7 +125,7 @@ class _DashboardState extends State<Dashboard> {
                       mainAxisSpacing: 11,
                       crossAxisCount: 2,
                       crossAxisSpacing: 11,
-                      childAspectRatio: 4/2.55,
+                      childAspectRatio: 4 / 2.55,
                       // childAspectRatio: mWidth * 0.4 / mHeight * 0.05,
                     ),
                     children: [

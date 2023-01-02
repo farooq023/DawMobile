@@ -197,15 +197,11 @@ class _SearchFilterInState extends State<SearchFilterIn> {
                       width: mWidth * 0.4,
                       child: TextField(
                         enabled: startDateCtrl.text != '',
-                        // onChanged: (val) {
-                        //   // searchText = val.toLowerCase();
-                        //   // searchMail();
-                        // },
                         decoration: InputDecoration(
                           border: UnderlineInputBorder(),
-                          // hintText: AppLocalizations.of(context)!.search,
-                          labelText: "End Date",
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                          // labelText: "End Date",
+                          labelText: AppLocalizations.of(context)!.endingDate,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                           suffixIcon: endDateCtrl.text != ''
                               ? IconButton(
                                   onPressed: () {

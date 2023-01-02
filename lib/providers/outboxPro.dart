@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import './languageProvider.dart';
-import './ipProvider.dart';
+import 'requestDataProvider.dart';
 
 class OutboxPro with ChangeNotifier {
   String accessToken;
@@ -13,48 +13,11 @@ class OutboxPro with ChangeNotifier {
   var obx;
   bool rcvd = false;
 
-  // Future<List<Map>> getDashboardInbox() async {
-  //   if (!rcvd) {
-  //     String url = '${IpProvider.ip}api/Dashboard/UserInbox?UserID=$uID';
-  //     var response = await http.get(
-  //       Uri.parse(url),
-  //       headers: {
-  //         'Authorization': 'Bearer $accessToken',
-  //       },
-  //     );
-
-  //     var res = await json.decode(response.body);
-
-  //     // List<Map> obx = res['Result']['Data'];
-  //     obx = res['Result']['Data'];
-  //     rcvd = true;
-  //   }
-
-  //   // print('******* allocated received list *******');
-
-  //   List<Map> setInbox = [];
-
-  //   for (int i = 0; i < obx.length; i++) {
-  //     setInbox.add(
-  //       {
-  //         "Sender": obx[i]['Sender'],
-  //         "WFBeginDate": obx[i]['WFBeginDate'],
-  //         "SUBJECT": obx[i]['SUBJECT'],
-  //         "wfTypeDesc": obx[i]['wfTypeDesc'],
-  //       },
-  //     );
-  //   }
-
-  //   return setInbox;
-  // }
-
   Future<List<Map>> getFullOutbox() async {
-    String url = '${IpProvider.ip}api/WFSent/GetWFSent';
+    String url = '${RequestDataProvider.ip}api/WFSent/GetWFSent';
     var response = await http.post(
       Uri.parse(url),
-      headers: {
-        'Authorization': 'Bearer $accessToken',
-      },
+      headers: RequestDataProvider.authHeader,
       body: {
         'UserID': '$uID',
       },
@@ -75,8 +38,7 @@ class OutboxPro with ChangeNotifier {
         beginDate = comparer[0];
       }
       if (LanguageProvider.appLocale == const Locale('ar')) {
-        String searchString =
-            obx[i]['Recipient'] == null ? '' : obx[i]['Recipient'];
+        String searchString = obx[i]['Recipient'] == null ? '' : obx[i]['Recipient'];
         if (obx[i]['SUBJECT'] != null) {
           searchString += ' ' + obx[i]['SUBJECT'];
         }
@@ -104,8 +66,7 @@ class OutboxPro with ChangeNotifier {
           },
         );
       } else {
-        String searchString =
-            obx[i]['RecipientEn'] == null ? '' : obx[i]['RecipientEn'];
+        String searchString = obx[i]['RecipientEn'] == null ? '' : obx[i]['RecipientEn'];
         if (obx[i]['SUBJECT'] != null) {
           searchString += ' ' + obx[i]['SUBJECT'];
         }
