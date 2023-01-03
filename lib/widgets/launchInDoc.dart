@@ -7,7 +7,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 
 import '../providers/launchInDocProv.dart';
+
 import '../widgets/wfSubject.dart';
+import '../widgets/executeBtn.dart';
+import '../widgets/incompleteEntries.dart';
+import '../widgets/wfStatusDialog.dart';
 
 class LaunchInDoc extends StatefulWidget {
   const LaunchInDoc({super.key});
@@ -331,60 +335,14 @@ class _LaunchInDocState extends State<LaunchInDoc> {
     var cWidth = mWidth * 0.82;
 
     var modalHeight = mHeight * 0.95;
-    // var modalHeaderHeight = modalHeight * 0.05;
     var modalBodyHeight = modalHeight * 0.9;
-
-    Widget incompleteEntriesDialog() {
-      return Container(
-        height: mHeight * 0.15,
-        width: double.maxFinite,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: incompleteEntries.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Text(
-              incompleteEntries[index],
-              style: TextStyle(
-                fontSize: 18,
-                color: Theme.of(context).primaryColor,
-              ),
-            );
-          },
-        ),
-      );
-    }
 
     showAlertDialog() {
       return showDialog<void>(
         context: context,
         // barrierDismissible: false,
         builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: Theme.of(context).backgroundColor,
-            title: const Icon(
-              Icons.warning,
-              color: Colors.red,
-              size: 45,
-            ),
-            content: incompleteEntriesDialog(),
-            actions: [
-              OutlinedButton(
-                child: Text(
-                  'Close',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Theme.of(context).primaryColor),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
+          return IncompleteEntries(mHeight, incompleteEntries);
         },
       );
     }
@@ -394,51 +352,7 @@ class _LaunchInDocState extends State<LaunchInDoc> {
         context: context,
         // barrierDismissible: false,
         builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: Theme.of(context).backgroundColor,
-            title: res
-                ? const Icon(
-                    Icons.check_circle_outline,
-                    color: Colors.green,
-                    size: 45,
-                  )
-                : const Icon(
-                    Icons.clear,
-                    color: Colors.red,
-                    size: 45,
-                  ),
-            content: Container(
-              height: mHeight * 0.07,
-              width: double.maxFinite,
-              child: Center(
-                child: Text(
-                  res ? "Execution Successful!" : "An error occured during execution!",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              ),
-              // }
-            ),
-            actions: [
-              OutlinedButton(
-                child: Text(
-                  'Close',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Theme.of(context).primaryColor),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
+          return WfStatusDialog(res, mHeight);
         },
       );
     }
@@ -563,7 +477,7 @@ class _LaunchInDocState extends State<LaunchInDoc> {
                 // width: mWidth,
                 child: Column(
                   children: [
-                    WfSubject(cWidth, marginBottom, labelSize, subjectCtrl),
+                    WfSubject(cWidth, marginBottom, labelSize, subjectCtrl, true),
                     Container(
                       width: cWidth,
                       margin: EdgeInsets.only(bottom: marginBottom),
@@ -888,41 +802,7 @@ class _LaunchInDocState extends State<LaunchInDoc> {
                         ],
                       ),
                     ),
-                    Container(
-                      // margin: EdgeInsets.only(bottom: marginBottom),
-                      height: mHeight * (0.25 / 3),
-                      width: cWidth,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          // backgroundColor: Theme.of(context).primaryColor,
-                          backgroundColor: Colors.green,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                        onPressed: execute,
-                        child: launching
-                            ? const CircularProgressIndicator(
-                                color: Colors.white,
-                              )
-                            : Text(
-                                'Execute',
-                                style: TextStyle(
-                                  color: Theme.of(context).backgroundColor,
-                                  fontSize: labelSize,
-                                ),
-                              ),
-                      ),
-                    ),
-                    // Container(
-                    //   margin: const EdgeInsets.only(top: 15),
-                    //   child: ElevatedButton(
-                    //     onPressed: () {
-                    //       print(recipients);
-                    //     },
-                    //     child: const Text('print'),
-                    //   ),
-                    // ),
+                    ExecuteBtn(mHeight, cWidth, execute, launching, labelSize, "Execute"),
                   ],
                 ),
               ),

@@ -6,8 +6,9 @@ class WfSubject extends StatefulWidget {
   double marginBottom;
   double labelSize;
   TextEditingController subjectCtrl;
+  bool suffix;
 
-  WfSubject(this.cWidth, this.marginBottom, this.labelSize, this.subjectCtrl);
+  WfSubject(this.cWidth, this.marginBottom, this.labelSize, this.subjectCtrl, this.suffix);
 
   @override
   State<WfSubject> createState() => _WfSubjectState();
@@ -23,16 +24,13 @@ class _WfSubjectState extends State<WfSubject> {
         controller: widget.subjectCtrl,
         decoration: InputDecoration(
           border: const UnderlineInputBorder(),
-          // hintText: AppLocalizations.of(context)!.search,
-          // labelText: AppLocalizations.of(context)!.reqNo,
-          // labelText: 'Subject',
           labelText: AppLocalizations.of(context)!.subject,
           labelStyle: TextStyle(
             color: Theme.of(context).primaryColor,
             fontSize: widget.labelSize,
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-          suffixIcon: widget.subjectCtrl.text != ''
+          suffixIcon: widget.subjectCtrl.text != '' && widget.suffix
               ? IconButton(
                   onPressed: () {
                     setState(() {

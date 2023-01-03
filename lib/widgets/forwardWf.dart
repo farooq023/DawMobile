@@ -10,6 +10,9 @@ import '../providers/launchInDocProv.dart';
 import '../providers/forwardWfPro.dart';
 
 import '../widgets/modelHeader.dart';
+import '../widgets/wfSubject.dart';
+import '../widgets/executeBtn.dart';
+import '../widgets/incompleteEntries.dart';
 
 class ForwardWf extends StatefulWidget {
   final List<double> detIDs;
@@ -39,6 +42,8 @@ class _ForwardWfState extends State<ForwardWf> {
   double labelSize = 20;
 
   bool rcvdFromProviders = false;
+  bool forwarding = false;
+  List<String> incompleteEntries = [];
 
   @override
   void initState() {
@@ -136,9 +141,59 @@ class _ForwardWfState extends State<ForwardWf> {
         MediaQuery.of(context).padding.bottom;
     var mWidth = mSize.width;
     var cWidth = mWidth * 0.82;
-
     var modalHeight = mHeight * 0.95;
     var modalBodyHeight = modalHeight * 0.91;
+
+    showAlertDialog() {
+      return showDialog<void>(
+        context: context,
+        // barrierDismissible: false,
+        builder: (BuildContext context) {
+          return IncompleteEntries(mHeight, incompleteEntries);
+        },
+      );
+    }
+
+    void forward() {
+      setState(() {
+        forwarding = true;
+      });
+      incompleteEntries.clear();
+      if (actionController.text.isNotEmpty && !actions.contains(actionController.text)) {
+        incompleteEntries.add("- Invalid Action!");
+      }
+      if (recipients.isEmpty) {
+        incompleteEntries.add("- Add at least one recipient.");
+      } else {
+        var arrayFinalDate = dateCtrl.text.split("/");
+        String stringFinalDate = arrayFinalDate[2] + "-" + arrayFinalDate[1] + "-" + arrayFinalDate[0];
+        DateTime obfinalDate = DateTime.parse(stringFinalDate);
+
+        for (int i = 0; i < recipients.length; i++) {
+          if (recipients[i]["date"].isNotEmpty) {
+            var userFinalDate = recipients[i]["date"].split("/");
+            String stringUserDate = userFinalDate[2] + "-" + userFinalDate[1] + "-" + userFinalDate[0];
+            DateTime obUserDate = DateTime.parse(stringUserDate);
+
+            if (obUserDate.isAfter(obfinalDate)) {
+              incompleteEntries.add("- Invalid date selection for " + recipients[i]["name"] + ".");
+            }
+          }
+        }
+      }
+      if (files.isEmpty) {
+        incompleteEntries.add("- Attach at least one file.");
+      }
+      if (incompleteEntries.isNotEmpty) {
+        setState(() {
+          forwarding = false;
+        });
+        showAlertDialog();
+      } else {
+        if (widget.detIDs.length == 1) {
+        } else {}
+      }
+    }
 
     return Container(
       height: modalHeight,
@@ -154,24 +209,7 @@ class _ForwardWfState extends State<ForwardWf> {
                       height: mHeight * 1.25,
                       child: Column(
                         children: [
-                          Container(
-                            width: cWidth,
-                            margin: EdgeInsets.only(bottom: marginBottom),
-                            child: TextField(
-                              enabled: false,
-                              controller: subjectCtrl,
-                              decoration: InputDecoration(
-                                border: const UnderlineInputBorder(),
-                                labelText: AppLocalizations.of(context)!.subject,
-                                labelStyle: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: labelSize,
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                              ),
-                              textInputAction: TextInputAction.search,
-                            ),
-                          ),
+                          WfSubject(cWidth, marginBottom, labelSize, subjectCtrl, false),
                           Container(
                             width: cWidth,
                             // margin: EdgeInsets.only(bottom: marginBottom),
@@ -452,6 +490,7 @@ class _ForwardWfState extends State<ForwardWf> {
                                 ],
                               ),
                             ),
+                          ExecuteBtn(mHeight, cWidth, forward, forwarding, labelSize, "Forward"),
                         ],
                       ),
                     ),
