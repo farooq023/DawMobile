@@ -12,10 +12,7 @@ class FileProvider with ChangeNotifier {
   Future<dynamic> getVsIds(double dDetId) async {
     int detId = dDetId.toInt();
     String url = '${RequestDataProvider.ip}api/WFLaunch/GetAttachsByDetID?userID=$uID&DetId=$detId';
-    var response = await http.get(
-      Uri.parse(url),
-      headers: RequestDataProvider.authHeader,
-    );
+    var response = await http.get(Uri.parse(url), headers: RequestDataProvider.authHeader);
 
     var res = await json.decode(response.body);
     var vsIds = res['Result'];
@@ -23,24 +20,64 @@ class FileProvider with ChangeNotifier {
   }
 
   Future<String> getFileUrl(double dDetId, String vsID) async {
+    print(dDetId);
+    print(vsID);
     int detId = dDetId.toInt();
     String url = '${RequestDataProvider.ip}api/Common/GetFileNetDoc?userID=$uID&vsid=$vsID&DetId=$detId&PageName=a&DocTypeCode=0';
-    var response = await http.get(
-      Uri.parse(url),
-      headers: RequestDataProvider.authHeader,
-    );
-
+    var response = await http.get(Uri.parse(url), headers: RequestDataProvider.authHeader);
     var res = await json.decode(response.body);
 
     if (res['Result'] != null && res['Result']['Document'].length != 0) {
       url = res['Result']['Document'][0]['FileURL'];
+
       if (url.startsWith('http://ser-dew-001.scpd.com'))
         return url.replaceFirst('ser-dew-001.scpd.com', '10.0.190.191');
-      else if (url.startsWith('http://ser-ool-001.scpd.com') || url.startsWith('http://SER-OOL-001.scpd.com'))
+      else if (url.startsWith('http://ser-ool-001.scpd.com'))
         return url.replaceFirst('http://ser-ool-001.scpd.com', '10.0.190.193');
+      else if (url.startsWith('http://SER-OOL-001.scpd.com')) return url.replaceFirst('SER-OOL-001.scpd.com', '10.0.190.193');
+
       return url;
     } else {
       return "error";
     }
   }
+
+  // Future<String> convertToPDF(String fileName) async {
+  //   String url = '${RequestDataProvider.ip}api/Common/GetFileNetDoc?userID=$uID&DocFileName=$fileName';
+  //   var response = await http.get(Uri.parse(url), headers: RequestDataProvider.authHeader);
+  //   var res = await json.decode(response.body);
+
+  //   if (res['Result'] != null && res['Result']['Document'].length != 0) {
+  //     url = res['Result']['Document'][0]['FileURL'];
+
+  //     if (url.startsWith('http://ser-dew-001.scpd.com'))
+  //       return url.replaceFirst('ser-dew-001.scpd.com', '10.0.190.191');
+  //     else if (url.startsWith('http://ser-ool-001.scpd.com'))
+  //       return url.replaceFirst('http://ser-ool-001.scpd.com', '10.0.190.193');
+  //     else if (url.startsWith('http://SER-OOL-001.scpd.com')) return url.replaceFirst('http://SER-OOL-001.scpd.com', '10.0.190.193');
+  //     return url;
+  //   } else {
+  //     return "error";
+  //   }
+  // }
+
+  Future<Map> getFilesUrlAndName(double dDetId, String vsID) async {
+    print("dDetIddDetIddDetId");
+    print(dDetId);
+    print(vsID);
+    int detId = dDetId.toInt();
+    String url = '${RequestDataProvider.ip}api/Common/GetFileNetDoc?userID=$uID&vsid=$vsID&DetId=$detId&PageName=a&DocTypeCode=0';
+    var response = await http.get(Uri.parse(url), headers: RequestDataProvider.authHeader);
+    var res = await json.decode(response.body);
+
+    if (res['Result'] != null && res['Result']['Document'].length != 0) {
+      res['Result']['Document'][0]["deletable"] = false;
+      return res['Result']['Document'][0];
+    } else {
+      return {};
+    }
+  }
 }
+
+
+//  fileData["FileURL"]

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 class WfStatusDialog extends StatelessWidget {
   bool res;
+  String msg;
   double mHeight;
 
-  WfStatusDialog(this.res, this.mHeight);
+  WfStatusDialog(this.res, this.msg, this.mHeight);
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -25,7 +26,8 @@ class WfStatusDialog extends StatelessWidget {
         width: double.maxFinite,
         child: Center(
           child: Text(
-            res ? "Execution Successful!" : "An error occured during execution!",
+            // res ? "Execution Successful!" : "An error occured during execution!",
+            msg,
             style: TextStyle(
               fontSize: 18,
               color: Theme.of(context).primaryColor,

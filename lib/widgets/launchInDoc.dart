@@ -352,7 +352,10 @@ class _LaunchInDocState extends State<LaunchInDoc> {
         context: context,
         // barrierDismissible: false,
         builder: (BuildContext context) {
-          return WfStatusDialog(res, mHeight);
+          if (res)
+            return WfStatusDialog(res, "Execution Successful!", mHeight);
+          else
+            return WfStatusDialog(res, "An error occured during execution!", mHeight);
         },
       );
     }
@@ -365,7 +368,7 @@ class _LaunchInDocState extends State<LaunchInDoc> {
       if (subjectCtrl.text.isEmpty) {
         incompleteEntries.add("- Add Subject.");
       }
-      if (actionController.text.isNotEmpty && !actions.contains(actionController.text)) {
+      if (!actions.contains(actionController.text)) {
         incompleteEntries.add("- Invalid Action!");
       }
       if (recipients.isEmpty) {
@@ -398,7 +401,7 @@ class _LaunchInDocState extends State<LaunchInDoc> {
       } else {
         List<String> paths = [];
         for (int i = 0; i < files.length; i++) paths.add(files[i]["path"]);
-        dynamic filesData = await Provider.of<LaunchInDocProv>(context, listen: false).uploadFileAndGetItsData(paths);
+        List filesData = await Provider.of<LaunchInDocProv>(context, listen: false).uploadFileAndGetItsData(paths);
         int actionID = actionIds[actions.indexOf(actionController.text)]; //    1
         int priorityID = priorityIds[priorities.indexOf(priorityValue)]; //    3
         List wfDate = dateCtrl.text.split("/");
@@ -439,7 +442,9 @@ class _LaunchInDocState extends State<LaunchInDoc> {
         };
 
         bool res = await Provider.of<LaunchInDocProv>(context, listen: false).launchWorkflow(finalObject);
-        launching = false;
+        setState(() {
+          launching = false;
+        });
         await showStatusDialog(res);
         if (res) Navigator.of(context).pop();
       }
@@ -453,7 +458,13 @@ class _LaunchInDocState extends State<LaunchInDoc> {
       child: Column(
         children: [
           Container(
-            margin: const EdgeInsets.only(top: 15, bottom: 18),
+            // decoration: BoxDecoration(
+            //   border: Border.all(
+            //     color: Colors.red,
+            //     width: 1,
+            //   ),
+            // ),
+            margin: const EdgeInsets.only(top: 15, bottom: 12),
             child: Text(
               AppLocalizations.of(context)!.internalMemo,
               style: TextStyle(

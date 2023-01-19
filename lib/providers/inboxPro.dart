@@ -17,10 +17,7 @@ class InboxPro with ChangeNotifier {
   Future<List<Map>> getDashboardInbox() async {
     if (!rcvd) {
       String url = '${RequestDataProvider.ip}api/Dashboard/UserInbox?UserID=$uID';
-      var response = await http.get(
-        Uri.parse(url),
-        headers: RequestDataProvider.authHeader,
-      );
+      var response = await http.get(Uri.parse(url), headers: RequestDataProvider.authHeader);
       var res = await json.decode(response.body);
       ibx = res['Result']['Data'];
       rcvd = true;

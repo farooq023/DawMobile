@@ -51,14 +51,14 @@ class _LoginState extends State<Login> {
       spin = 1;
     });
 
-    Socket.connect('10.0.190.191', 50, timeout: Duration(seconds: 2)).then((socket) async {
+    Socket.connect('10.0.190.191', 50, timeout: const Duration(seconds: 2)).then((socket) async {
       String res = await Provider.of<Auth>(context, listen: false).login(name, pass);
 
       setState(() {
         spin = 0;
       });
 
-      print(res);
+      // print(res);
 
       if (res == 'success') {
         Navigator.pushReplacementNamed(context, '/inbox');
@@ -130,6 +130,7 @@ class _LoginState extends State<Login> {
             child: Column(
               children: [
                 Container(
+                  // decoration: BoxDecoration(border: Border.all(width: 1, color: Colors.pink)),
                   height: mHeight * 0.07,
                   // color: Colors.purple,
                   child: Align(
@@ -145,6 +146,7 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 Container(
+                  // decoration: BoxDecoration(border: Border.all(width: 1, color: Colors.pink)),
                   height: mHeight * 0.93,
                   child: Center(
                     // alignment: Alignment.center,
@@ -203,7 +205,7 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(15),
                             margin: const EdgeInsets.only(top: 30),
                             child: Container(
                               child: Column(
@@ -231,7 +233,7 @@ class _LoginState extends State<Login> {
                                       fillColor: Theme.of(context).backgroundColor,
                                       labelText: AppLocalizations.of(context)!.username,
                                       // hintText: 'sdsd',
-                                      border: UnderlineInputBorder(),
+                                      border: const UnderlineInputBorder(),
                                       focusedBorder: UnderlineInputBorder(
                                         borderSide: BorderSide(color: Theme.of(context).primaryColor),
                                       ),
@@ -325,7 +327,6 @@ class _LoginState extends State<Login> {
                                         ),
                                       ),
                                     ),
-
                                   if (err == 1)
                                     Container(
                                       child: Text(
@@ -383,12 +384,21 @@ class _LoginState extends State<Login> {
                                   //     style: const TextStyle(fontSize: 21),
                                   //   ),
                                   // ),
-                                  Center(
-                                    child: spin != 0
-                                        ? CircularProgressIndicator(
-                                            color: Theme.of(context).primaryColor,
-                                          )
-                                        : null,
+                                  Container(
+                                    // decoration: BoxDecoration(
+                                    //   border: Border.all(
+                                    //     color: Colors.red,
+                                    //     width: 1,
+                                    //   ),
+                                    // ),
+                                    // height: mHeight * 0.05,
+                                    child: Center(
+                                      child: spin != 0
+                                          ? CircularProgressIndicator(
+                                              color: Theme.of(context).primaryColor,
+                                            )
+                                          : null,
+                                    ),
                                   ),
                                 ],
                               ),

@@ -40,10 +40,13 @@ class _VsIdListState extends State<VsIdList> {
   }
 
   void fetchFileFromUrl() async {
+    // print("detId is " + (widget.detID).toString());
+    // print("vsID is " + vsids[vsIdIndex]['vsID']);
     setState(() {
       url = '';
     });
     url = await Provider.of<FileProvider>(context, listen: false).getFileUrl(widget.detID, vsids[vsIdIndex]['vsID']);
+    print("URL: " + url);
     setState(() {});
   }
 

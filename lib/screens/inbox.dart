@@ -245,9 +245,9 @@ class _InboxState extends State<Inbox> {
                             searchMail();
                           },
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                             hintText: AppLocalizations.of(context)!.search,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                           ),
                           textInputAction: TextInputAction.search,
                         ),
@@ -339,7 +339,7 @@ class _InboxState extends State<Inbox> {
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     Container(
-                                                      width: mWidth * 0.45,
+                                                      width: mWidth * 0.5,
                                                       child: Text(
                                                         "${_setInbox[i]['Sender']}",
                                                         style: const TextStyle(
@@ -374,7 +374,7 @@ class _InboxState extends State<Inbox> {
                                                   ],
                                                 ),
                                                 Container(
-                                                  width: mWidth * 0.45,
+                                                  width: mWidth * 0.6,
                                                   child: Text(
                                                     "${_setInbox[i]['SUBJECT']}",
                                                     style: const TextStyle(
@@ -447,7 +447,7 @@ class _InboxState extends State<Inbox> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Container(
-                                      width: mWidth * 0.45,
+                                      width: mWidth * 0.5,
                                       child: Text(
                                         "${_setInbox[i]['Sender']}",
                                         style: TextStyle(
@@ -475,7 +475,7 @@ class _InboxState extends State<Inbox> {
                                   ],
                                 ),
                                 Container(
-                                  width: mWidth * 0.45,
+                                  width: mWidth * 0.6,
                                   child: Text(
                                     "${_setInbox[i]['SUBJECT']}",
                                     style: TextStyle(

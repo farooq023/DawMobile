@@ -41,6 +41,7 @@ class ForwardWfPro with ChangeNotifier {
         "subject": rcvdWFsData[i]["WFData"]["SUBJECT"],
         "reqNo": rcvdWFsData[i]["WFData"]["RequisitionNo"],
         "wfDeadline": rcvdWFsData[i]["WFData"]["WFDeadLine"],
+        "priorityID": rcvdWFsData[i]["WFData"]["PriorityID"],
         "priority": rcvdWFsData[i]["WFData"][primPriority] ?? rcvdWFsData[i]["WFData"][secPriority],
         "attachs": rcvdWFsData[i]["Attachs"],
       });
@@ -49,24 +50,60 @@ class ForwardWfPro with ChangeNotifier {
     return wfsData;
   }
 
+  // Future<bool> forwardWorkflow(Map<String, dynamic> wfData) async {
+  //   String url = '${RequestDataProvider.ip}api/WFLaunch/Launch';
+
+  //   List<Map<String, dynamic>> launchDataItemss = [
+  //     {
+  //       "Subject": wfData["Subject"],
+  //       "PriorityID": '${wfData["PrioID"]}',
+  //       "WfEndDate": wfData["WfEndD"],
+  //       "Attachs": [
+  //         {"Files": wfData["filessss"]}
+  //       ],
+  //       "RecentlySignedDocVSIDs": [""],
+  //     }
+  //   ];
+
+  //   var response = await http.post(
+  //     Uri.parse(url),
+  //     headers: RequestDataProvider.authHeader,
+  //     body: jsonEncode(<String, dynamic>{
+  //       "WFAction": '${wfData["actID"]}',
+  //       "LaunchDataItems": launchDataItemss,
+  //       "LaunchToUsers": wfData["LaunchToUsers"],
+  //       "UserID": '$uID'
+  //     }),
+  //   );
+
+  //   var res = await json.decode(response.body);
+  //   return res["Success"];
+  // }
+
   Future<bool> forwardWorkflow(Map<String, dynamic> wfData) async {
+    print("forwarding");
     String url = '${RequestDataProvider.ip}api/WFLaunch/Launch';
+
+    // List attachments = wfData["attachments"];
 
     List<Map<String, dynamic>> launchDataItemss = [
       {
+        "DetID": wfData["DetID"],
         "Subject": wfData["Subject"],
+        "ReqNo": wfData["ReqNo"],
         "PriorityID": '${wfData["PrioID"]}',
         "WfEndDate": wfData["WfEndD"],
-        "Attachs": [
-          {"Files": wfData["filessss"]}
-        ],
+        "IsReplyRequired": true,
+        "IsSplitWF": true,
+        // "AddActionSheet": true,
+        "Attachs": wfData["attachments"],
         "RecentlySignedDocVSIDs": [""],
       }
     ];
 
     var response = await http.post(
       Uri.parse(url),
-      headers: RequestDataProvider.authHeader,
+      headers: RequestDataProvider.contentHeader,
       body: jsonEncode(<String, dynamic>{
         "WFAction": '${wfData["actID"]}',
         "LaunchDataItems": launchDataItemss,
@@ -76,6 +113,7 @@ class ForwardWfPro with ChangeNotifier {
     );
 
     var res = await json.decode(response.body);
+    print(res);
     return res["Success"];
   }
 }

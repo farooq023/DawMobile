@@ -84,7 +84,7 @@ class LaunchInDocProv with ChangeNotifier {
     return users;
   }
 
-  Future<dynamic> uploadFileAndGetItsData(List<String> files) async {
+  Future<List> uploadFileAndGetItsData(List<String> files) async {
     var request = http.MultipartRequest('POST', Uri.parse('${RequestDataProvider.ip}api/Common/PostFiles'));
     request.headers.addAll(RequestDataProvider.authHeader);
     for (int i = 0; i < files.length; i++) {
@@ -105,7 +105,17 @@ class LaunchInDocProv with ChangeNotifier {
         "PriorityID": '${wfData["PrioID"]}',
         "WfEndDate": wfData["WfEndD"],
         "Attachs": [
-          {"Files": wfData["filessss"]}
+          {
+            "vsID": "",
+            "DocTypeCode": 0,
+            "CorrepCode": "",
+            "isCurrent": 0,
+            "Serial": 1,
+            "UploadMethod": 1,
+            "AllowSignMemo": false,
+            "AllowRestoreMainDocument": false,
+            "Files": wfData["filessss"],
+          }
         ],
         "RecentlySignedDocVSIDs": [""],
       }
