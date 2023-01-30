@@ -7,7 +7,7 @@ class ModelHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 15, bottom: 18),
+      margin: const EdgeInsets.only(top: 15, bottom: 17),
       child: Text(
         modalTitle,
         style: TextStyle(

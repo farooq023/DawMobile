@@ -82,9 +82,9 @@ class _LoginState extends State<Login> {
     });
   }
 
-  void _changeLang() {
-    Provider.of<LanguageProvider>(context, listen: false).changeLanguage();
-  }
+  // void _changeLang() {
+  //   Provider.of<LanguageProvider>(context, listen: false).changeLanguage();
+  // }
 
   void _clear() {
     setState(() {
@@ -194,7 +194,6 @@ class _LoginState extends State<Login> {
                                 bottom: 15,
                               ),
                               child: Text(
-                                // 'User Login',
                                 AppLocalizations.of(context)!.userLogin,
                                 style: TextStyle(
                                   fontSize: 18,
